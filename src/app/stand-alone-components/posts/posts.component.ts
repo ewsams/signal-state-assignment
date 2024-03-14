@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ViewChild, effect } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnInit,
+  ViewChild,
+  effect,
+} from '@angular/core';
 import { Post } from '../../models/Post.models';
 import { PostsService } from '../../services/posts.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -71,7 +77,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
           color="primary"
           (click)="postsService.loadPosts()"
         >
-          Load Posts
+          Load New Posts
         </button>
         <button mat-raised-button color="accent" (click)="createPost()">
           Create Post
@@ -94,16 +100,19 @@ import { toSignal } from '@angular/core/rxjs-interop';
     `,
   ],
 })
-export class PostsComponent implements AfterViewInit {
+export class PostsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   displayedColumns = ['title', 'body', 'actions'];
   dataSource = new MatTableDataSource<Post>([]);
-  currentlyLoadedPosts = toSignal(this.postsService.loadPosts());
 
-  constructor(public readonly postsService: PostsService) {
+  constructor(protected readonly postsService: PostsService) {
     effect(() => {
-      this.dataSource.data = this.currentlyLoadedPosts() as Post[];
+      this.dataSource.data = this.postsService.posts();
     });
+  }
+
+  ngOnInit(): void {
+    this.postsService.loadPosts();
   }
 
   ngAfterViewInit() {
@@ -127,8 +136,12 @@ export class PostsComponent implements AfterViewInit {
   }
 
   updatePost(id: number): void {
-    const randomTitle = `Updated Title ${this.generateRandomSentence(3)}`;
-    const randomBody = `Updated Body ${this.generateRandomSentence(10)}`;
+    const randomTitle = `Updated Title ID: ${id} ${this.generateRandomSentence(
+      3
+    )}`;
+    const randomBody = `Updated Body ID: ${id} ${this.generateRandomSentence(
+      10
+    )}`;
     const updatedPost: Post = {
       userId: 1,
       id,

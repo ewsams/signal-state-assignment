@@ -30,21 +30,24 @@ export class PostsService {
 
   loadPosts() {
     this.setLoading(true);
-    return this.http.get<Post[]>(`${this.apiUrl}/posts`).pipe(
-      tap((posts) => {
-        this.setPosts(posts);
-        this.setLoading(false);
-      }),
-      catchError((error) => {
-        this.setError(error.message);
-        return EMPTY;
-      })
-    );
+    this.setPosts([]);
+    return this.http
+      .get<Post[]>(`${this.apiUrl}/posts`)
+      .pipe(
+        tap((posts) => {
+          this.setPosts(posts);
+          this.setLoading(false);
+        }),
+        catchError((error) => {
+          this.setError(error.message);
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 
   getPostById(postId: number) {
     this.setLoading(true);
-
     return this.http
       .get<Post>(`${this.apiUrl}/posts/${postId}`)
       .pipe(
