@@ -31,12 +31,14 @@ export class PostsService {
   loadPosts() {
     this.setLoading(true);
     return this.http.get<Post[]>(`${this.apiUrl}/posts`).pipe(
-      tap((posts) => this.setPosts(posts)),
+      tap((posts) => {
+        this.setPosts(posts);
+        this.setLoading(false);
+      }),
       catchError((error) => {
         this.setError(error.message);
         return EMPTY;
-      }),
-      finalize(() => this.setLoading(false))
+      })
     );
   }
 
@@ -60,12 +62,14 @@ export class PostsService {
     return this.http
       .get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`)
       .pipe(
-        tap((comments) => this.setComments(comments)),
+        tap((comments) => {
+          this.setComments(comments);
+          this.setLoading(false);
+        }),
         catchError((error) => {
           this.setError(error.message);
           return EMPTY;
-        }),
-        finalize(() => this.setLoading(false))
+        })
       )
       .subscribe();
   }
@@ -75,12 +79,14 @@ export class PostsService {
     return this.http
       .post<Post>(`${this.apiUrl}/posts`, post)
       .pipe(
-        tap((createdPost) => this.addPost(createdPost)),
+        tap((createdPost) => {
+          this.addPost(createdPost);
+          this.setLoading(false);
+        }),
         catchError((error) => {
           this.setError(error.message);
           return EMPTY;
-        }),
-        finalize(() => this.setLoading(false))
+        })
       )
       .subscribe();
   }
@@ -90,12 +96,14 @@ export class PostsService {
     return this.http
       .put<Post>(`${this.apiUrl}/posts/${postId}`, post)
       .pipe(
-        tap((updatedPost) => this.updatePostInState(updatedPost)),
+        tap((updatedPost) => {
+          this.updatePostInState(updatedPost);
+          this.setLoading(false);
+        }),
         catchError((error) => {
           this.setError(error.message);
           return EMPTY;
-        }),
-        finalize(() => this.setLoading(false))
+        })
       )
       .subscribe();
   }
@@ -105,12 +113,14 @@ export class PostsService {
     return this.http
       .delete<void>(`${this.apiUrl}/posts/${postId}`)
       .pipe(
-        tap(() => this.removePostFromState(postId)),
+        tap(() => {
+          this.removePostFromState(postId);
+          this.setLoading(false);
+        }),
         catchError((error) => {
           this.setError(error.message);
           return EMPTY;
-        }),
-        finalize(() => this.setLoading(false))
+        })
       )
       .subscribe();
   }

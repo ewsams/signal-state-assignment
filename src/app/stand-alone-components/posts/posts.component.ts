@@ -126,22 +126,20 @@ export class PostsComponent implements AfterViewInit {
     this.dataSource.data = [newPost, ...this.dataSource.data];
   }
 
-  updatePost(postId: number): void {
+  updatePost(id: number): void {
     const randomTitle = `Updated Title ${this.generateRandomSentence(3)}`;
     const randomBody = `Updated Body ${this.generateRandomSentence(10)}`;
     const updatedPost: Post = {
       userId: 1,
-      id: postId,
+      id,
       title: randomTitle,
       body: randomBody,
     };
-    this.postsService.updatePost(postId, updatedPost);
+    this.postsService.updatePost(id, updatedPost);
 
-    const postIndex = this.dataSource.data.findIndex(
-      (post) => post.id === postId
-    );
+    const postIndex = this.dataSource.data.findIndex((post) => post.id === id);
 
-    this.dataSource.data[postIndex] = updatedPost;
+    this.dataSource.data.splice(postIndex, 1, updatedPost);
   }
 
   deletePost(postId: number): void {
