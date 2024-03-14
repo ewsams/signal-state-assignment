@@ -162,10 +162,10 @@ export class PostsComponent implements OnInit, AfterViewInit {
       userId: 1,
       id,
       title: `New Post ID: #${id} ${this.postsService.generateRandomSentence(
-        3
+        10
       )}`,
       body: `This is a new post ${this.postsService.generateRandomSentence(
-        10
+        30
       )} it's ID is ${id}`,
       author: {
         name: '',
@@ -182,10 +182,10 @@ export class PostsComponent implements OnInit, AfterViewInit {
 
   updatePost(id: number): void {
     const randomTitle = `Updated Title ID: ${id} ${this.postsService.generateRandomSentence(
-      3
+      10
     )}`;
     const randomBody = `Updated Body ID: ${id} ${this.postsService.generateRandomSentence(
-      10
+      30
     )}`;
     const updatedPost: Post = {
       userId: 1,
