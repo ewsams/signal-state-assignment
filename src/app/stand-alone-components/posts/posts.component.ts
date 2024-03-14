@@ -132,7 +132,7 @@ export class PostsComponent implements OnInit, AfterViewInit {
 
     this.postsService.createPost(newPost);
 
-    this.dataSource.data = [newPost, ...this.dataSource.data];
+    this.dataSource.data.unshift(newPost);
   }
 
   updatePost(id: number): void {
