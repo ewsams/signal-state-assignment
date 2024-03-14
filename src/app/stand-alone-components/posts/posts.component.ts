@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-posts',
@@ -28,6 +28,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     MatProgressSpinnerModule,
     MatPaginatorModule,
     MatTableModule,
+    DatePipe,
   ],
   template: `
     <div class="container">
@@ -49,6 +50,34 @@ import { toSignal } from '@angular/core/rxjs-interop';
         <ng-container matColumnDef="body">
           <mat-header-cell *matHeaderCellDef> Body </mat-header-cell>
           <mat-cell *matCellDef="let post"> {{ post.body }} </mat-cell>
+        </ng-container>
+
+        <!-- Author Name Column -->
+        <ng-container matColumnDef="authorName">
+          <mat-header-cell *matHeaderCellDef> Author Name </mat-header-cell>
+          <mat-cell *matCellDef="let post"> {{ post.author?.name }} </mat-cell>
+        </ng-container>
+
+        <!-- Author Email Column -->
+        <ng-container matColumnDef="authorEmail">
+          <mat-header-cell *matHeaderCellDef> Author Email </mat-header-cell>
+          <mat-cell *matCellDef="let post"> {{ post.author?.email }} </mat-cell>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <mat-header-cell *matHeaderCellDef> Created At </mat-header-cell>
+          <mat-cell *matCellDef="let post">
+            {{ post.metadata?.createdAt | date }}
+          </mat-cell>
+        </ng-container>
+
+        <!-- Updated At Column -->
+        <ng-container matColumnDef="updatedAt">
+          <mat-header-cell *matHeaderCellDef> Updated At </mat-header-cell>
+          <mat-cell *matCellDef="let post">
+            {{ post.metadata?.updatedAt | date }}
+          </mat-cell>
         </ng-container>
 
         <!-- Actions Column -->
@@ -102,7 +131,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class PostsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  displayedColumns = ['title', 'body', 'actions'];
+  displayedColumns = [
+    'title',
+    'body',
+    'authorName',
+    'authorEmail',
+    'createdAt',
+    'updatedAt',
+    'actions',
+  ];
   dataSource = new MatTableDataSource<Post>([]);
 
   constructor(protected readonly postsService: PostsService) {
@@ -124,22 +161,30 @@ export class PostsComponent implements OnInit, AfterViewInit {
     const newPost: Post = {
       userId: 1,
       id,
-      title: `New Post ID: #${id} ${this.generateRandomSentence(3)}`,
-      body: `This is a new post ${this.generateRandomSentence(
+      title: `New Post ID: #${id} ${this.postsService.generateRandomSentence(
+        3
+      )}`,
+      body: `This is a new post ${this.postsService.generateRandomSentence(
         10
       )} it's ID is ${id}`,
+      author: {
+        name: '',
+        email: '',
+      },
+      metadata: {
+        createdAt: '',
+        updatedAt: '',
+      },
     };
 
     this.postsService.createPost(newPost);
-
-    this.dataSource.data.unshift(newPost);
   }
 
   updatePost(id: number): void {
-    const randomTitle = `Updated Title ID: ${id} ${this.generateRandomSentence(
+    const randomTitle = `Updated Title ID: ${id} ${this.postsService.generateRandomSentence(
       3
     )}`;
-    const randomBody = `Updated Body ID: ${id} ${this.generateRandomSentence(
+    const randomBody = `Updated Body ID: ${id} ${this.postsService.generateRandomSentence(
       10
     )}`;
     const updatedPost: Post = {
@@ -147,26 +192,19 @@ export class PostsComponent implements OnInit, AfterViewInit {
       id,
       title: randomTitle,
       body: randomBody,
+      author: {
+        name: '',
+        email: '',
+      },
+      metadata: {
+        createdAt: '',
+        updatedAt: '',
+      },
     };
     this.postsService.updatePost(id, updatedPost);
-
-    const postIndex = this.dataSource.data.findIndex((post) => post.id === id);
-
-    this.dataSource.data.splice(postIndex, 1, updatedPost);
   }
 
   deletePost(postId: number): void {
     this.postsService.deletePost(postId);
-    this.dataSource.data = this.dataSource.data.filter(
-      (post) => post.id !== postId
-    );
-  }
-
-  private generateRandomSentence(wordCount: number): string {
-    const words = ['post', 'new', 'color', 'open', 'apple'];
-    return Array.from(
-      { length: wordCount },
-      () => words[Math.floor(Math.random() * words.length)]
-    ).join(' ');
   }
 }

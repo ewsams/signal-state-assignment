@@ -9,6 +9,14 @@ type PostsState = {
   comments: Comment[];
   isLoading: boolean;
   error: string | null;
+  author: {
+    name: string | null;
+    email: string | null;
+  };
+  metadata: {
+    createdAt: string | null;
+    updatedAt: string | null;
+  };
 };
 
 @Injectable({ providedIn: 'root' })
@@ -21,6 +29,14 @@ export class PostsService {
     comments: [],
     isLoading: false,
     error: null,
+    author: {
+      name: null,
+      email: null,
+    },
+    metadata: {
+      createdAt: null,
+      updatedAt: null,
+    },
   });
 
   readonly posts = computed(() => this.state().posts);
@@ -35,7 +51,18 @@ export class PostsService {
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => {
-          this.setPosts(posts);
+          const updatedPosts = posts.map((post) => ({
+            ...post,
+            author: {
+              name: this.generateRandomName(),
+              email: this.generateRandomEmail(),
+            },
+            metadata: {
+              createdAt: this.generateRandomDate(),
+              updatedAt: '',
+            },
+          }));
+          this.setPosts(updatedPosts);
           this.setLoading(false);
         }),
         catchError((error) => {
@@ -79,8 +106,19 @@ export class PostsService {
 
   createPost(post: Post) {
     this.setLoading(true);
+    const postWithMetadata: Post = {
+      ...post,
+      author: {
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+      },
+      metadata: {
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    };
     return this.http
-      .post<Post>(`${this.apiUrl}/posts`, post)
+      .post<Post>(`${this.apiUrl}/posts`, postWithMetadata)
       .pipe(
         tap((createdPost) => {
           this.addPost(createdPost);
@@ -96,8 +134,19 @@ export class PostsService {
 
   updatePost(postId: number, post: Post) {
     this.setLoading(true);
+    const postWithMetadata: Post = {
+      ...post,
+      author: {
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+      },
+      metadata: {
+        createdAt: post.metadata.createdAt,
+        updatedAt: Date.now().toString(),
+      },
+    };
     return this.http
-      .put<Post>(`${this.apiUrl}/posts/${postId}`, post)
+      .put<Post>(`${this.apiUrl}/posts/${postId}`, postWithMetadata)
       .pipe(
         tap((updatedPost) => {
           this.updatePostInState(updatedPost);
@@ -126,6 +175,35 @@ export class PostsService {
         })
       )
       .subscribe();
+  }
+
+  private generateRandomName(): string {
+    const names = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Williams'];
+    return names[Math.floor(Math.random() * names.length)];
+  }
+
+  private generateRandomEmail(): string {
+    const domains = ['example.com', 'test.com', 'demo.com'];
+    const randomString = Math.random().toString(36).substring(7);
+    const domain = domains[Math.floor(Math.random() * domains.length)];
+    return `${randomString}@${domain}`;
+  }
+
+  private generateRandomDate(): string {
+    const start = new Date(2022, 0, 1);
+    const end = new Date();
+    const randomTimestamp =
+      start.getTime() + Math.random() * (end.getTime() - start.getTime());
+    const randomDate = new Date(randomTimestamp);
+    return randomDate.toISOString();
+  }
+
+  generateRandomSentence(wordCount: number): string {
+    const words = ['post', 'new', 'color', 'open', 'apple'];
+    return Array.from(
+      { length: wordCount },
+      () => words[Math.floor(Math.random() * words.length)]
+    ).join(' ');
   }
 
   private setPosts(posts: Post[]): void {
