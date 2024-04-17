@@ -180,7 +180,7 @@ export class PostsService {
       .subscribe();
   }
 
-  // Helper methods to update the state
+  // Helper methods to patch the state
 
   private setPosts(posts: Post[]): void {
     patchState(this.state, { posts });
