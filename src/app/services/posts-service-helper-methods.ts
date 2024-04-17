@@ -27,12 +27,62 @@ export const randomSentenceWords = [
 ];
 
 export function generateRandomName(): string {
-  const names = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Williams'];
+  const names = [
+    'John Doe',
+    'Jane Smith',
+    'Alice Johnson',
+    'Bob Williams',
+    'Emily Clark',
+    'Michael Brown',
+    'Jessica Miller',
+    'David Wilson',
+    'Laura Garcia',
+    'James Anderson',
+    'Rachel Moore',
+    'Christopher Taylor',
+    'Amanda Davis',
+    'Joshua Martinez',
+    'Sarah White',
+    'Brian Harris',
+    'Nicole Thomas',
+    'Kevin Jackson',
+    'Stephanie Lee',
+    'Matthew Rodriguez',
+    'Ashley Lewis',
+    'Daniel Walker',
+    'Megan Hall',
+    'Aaron Allen',
+  ];
   return names[Math.floor(Math.random() * names.length)];
 }
 
 export function generateRandomEmail(): string {
-  const domains = ['example.com', 'test.com', 'demo.com'];
+  const domains = [
+    'example.com',
+    'test.com',
+    'demo.com',
+    'sample.com',
+    'mocksite.com',
+    'testsite.com',
+    'dummy.com',
+    'prototype.com',
+    'sandbox.com',
+    'trial.com',
+    'alpha.com',
+    'beta.com',
+    'temp.com',
+    'simulator.com',
+    'practice.com',
+    'experiment.com',
+    'playground.com',
+    'virtual.com',
+    'temporary.com',
+    'mytest.com',
+    'testrun.com',
+    'prelaunch.com',
+    'devsite.com',
+  ];
+
   const randomString = Math.random().toString(36).substring(7);
   const domain = domains[Math.floor(Math.random() * domains.length)];
   return `${randomString}@${domain}`;
