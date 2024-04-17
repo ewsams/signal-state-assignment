@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { signalState, patchState } from '@ngrx/signals';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { Post } from '../models/Post.models';
+import {
+  generateRandomDate,
+  generateRandomEmail,
+  generateRandomName,
+  generateRandomSentence,
+} from './posts-service-helper-methods';
 
 type PostsState = {
   posts: Post[];
@@ -54,11 +60,11 @@ export class PostsService {
           const updatedPosts = posts.map((post) => ({
             ...post,
             author: {
-              name: this.generateRandomName(),
-              email: this.generateRandomEmail(),
+              name: generateRandomName(),
+              email: generateRandomEmail(),
             },
             metadata: {
-              createdAt: this.generateRandomDate(),
+              createdAt: generateRandomDate(),
               updatedAt: '',
             },
           }));
@@ -104,7 +110,7 @@ export class PostsService {
       .subscribe();
   }
 
-  createPost(post: Post) {
+  addNewPost(post: Post) {
     this.setLoading(true);
     const postWithMetadata: Post = {
       ...post,
@@ -136,13 +142,10 @@ export class PostsService {
     this.setLoading(true);
     const postWithMetadata: Post = {
       ...post,
-      author: {
-        name: 'John Doe',
-        email: 'johndoe@example.com',
-      },
+      body: generateRandomSentence(40),
       metadata: {
         createdAt: post.metadata.createdAt,
-        updatedAt: Date.now().toString(),
+        updatedAt: new Date().toISOString(),
       },
     };
     return this.http
@@ -177,42 +180,13 @@ export class PostsService {
       .subscribe();
   }
 
-  private generateRandomName(): string {
-    const names = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Williams'];
-    return names[Math.floor(Math.random() * names.length)];
-  }
-
-  private generateRandomEmail(): string {
-    const domains = ['example.com', 'test.com', 'demo.com'];
-    const randomString = Math.random().toString(36).substring(7);
-    const domain = domains[Math.floor(Math.random() * domains.length)];
-    return `${randomString}@${domain}`;
-  }
-
-  private generateRandomDate(): string {
-    const start = new Date(2022, 0, 1);
-    const end = new Date();
-    const randomTimestamp =
-      start.getTime() + Math.random() * (end.getTime() - start.getTime());
-    const randomDate = new Date(randomTimestamp);
-    return randomDate.toISOString();
-  }
-
-  generateRandomSentence(wordCount: number): string {
-    const words = ['post', 'new', 'color', 'open', 'apple'];
-    return Array.from(
-      { length: wordCount },
-      () => words[Math.floor(Math.random() * words.length)]
-    ).join(' ');
-  }
-
   private setPosts(posts: Post[]): void {
     patchState(this.state, { posts });
   }
 
   private addPost(post: Post): void {
     patchState(this.state, (state) => ({
-      posts: [...state.posts, post],
+      posts: [post, ...state.posts],
     }));
   }
 

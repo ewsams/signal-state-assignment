@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DatePipe } from '@angular/common';
+import { generateRandomSentence } from '../../services/posts-service-helper-methods';
 
 @Component({
   selector: 'app-posts',
@@ -68,7 +69,7 @@ import { DatePipe } from '@angular/common';
         <ng-container matColumnDef="createdAt">
           <mat-header-cell *matHeaderCellDef> Created At </mat-header-cell>
           <mat-cell *matCellDef="let post">
-            {{ post.metadata?.createdAt | date }}
+            {{ post.metadata?.createdAt | date : 'medium' }}
           </mat-cell>
         </ng-container>
 
@@ -76,7 +77,7 @@ import { DatePipe } from '@angular/common';
         <ng-container matColumnDef="updatedAt">
           <mat-header-cell *matHeaderCellDef> Updated At </mat-header-cell>
           <mat-cell *matCellDef="let post">
-            {{ post.metadata?.updatedAt | date }}
+            {{ post.metadata?.updatedAt | date : 'medium' }}
           </mat-cell>
         </ng-container>
 
@@ -84,7 +85,7 @@ import { DatePipe } from '@angular/common';
         <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
           <mat-cell *matCellDef="let post">
-            <button mat-button (click)="updatePost(post.id)">Update</button>
+            <button mat-button (click)="updatePost(post)">Update</button>
             <button mat-button color="warn" (click)="deletePost(post.id)">
               Delete
             </button>
@@ -108,8 +109,8 @@ import { DatePipe } from '@angular/common';
         >
           Load New Posts
         </button>
-        <button mat-raised-button color="accent" (click)="createPost()">
-          Create Post
+        <button mat-raised-button color="accent" (click)="addPost()">
+          Add New Post
         </button>
       </div>
     </div>
@@ -156,17 +157,13 @@ export class PostsComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  createPost(): void {
+  addPost(): void {
     const id = Math.floor(Math.random() * 1000);
     const newPost: Post = {
       userId: 1,
       id,
-      title: `New Post ID: #${id} ${this.postsService.generateRandomSentence(
-        10
-      )}`,
-      body: `This is a new post ${this.postsService.generateRandomSentence(
-        30
-      )} it's ID is ${id}`,
+      title: `New Post ID: #${id} ${generateRandomSentence(10)}`,
+      body: `This is a new post ${generateRandomSentence(30)} it's ID is ${id}`,
       author: {
         name: '',
         email: '',
@@ -177,31 +174,17 @@ export class PostsComponent implements OnInit, AfterViewInit {
       },
     };
 
-    this.postsService.createPost(newPost);
+    this.postsService.addNewPost(newPost);
   }
 
-  updatePost(id: number): void {
-    const randomTitle = `Updated Title ID: ${id} ${this.postsService.generateRandomSentence(
+  updatePost(post: Post): void {
+    const randomTitle = `Updated Title ID: ${post.id} ${generateRandomSentence(
       10
     )}`;
-    const randomBody = `Updated Body ID: ${id} ${this.postsService.generateRandomSentence(
+    const randomBody = `Updated Body ID: ${post.id} ${generateRandomSentence(
       30
     )}`;
-    const updatedPost: Post = {
-      userId: 1,
-      id,
-      title: randomTitle,
-      body: randomBody,
-      author: {
-        name: '',
-        email: '',
-      },
-      metadata: {
-        createdAt: '',
-        updatedAt: '',
-      },
-    };
-    this.postsService.updatePost(id, updatedPost);
+    this.postsService.updatePost(post.id, post);
   }
 
   deletePost(postId: number): void {
