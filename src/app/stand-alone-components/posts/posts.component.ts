@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { DatePipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { generateRandomSentence } from '../../services/posts-service-helper-methods';
 
 @Component({
@@ -30,12 +30,26 @@ import { generateRandomSentence } from '../../services/posts-service-helper-meth
     MatPaginatorModule,
     MatTableModule,
     DatePipe,
+    JsonPipe,
   ],
   template: `
     <div class="container">
-      <h1>Posts Example Using Signal State</h1>
+      <div class="header-container">
+        <h1>Posts Example Using Signal State</h1>
+        <button mat-raised-button color="warn" (click)="showState = !showState">
+          Show Signal State
+        </button>
+      </div>
 
-      @if(postsService.isLoading()){
+      @if(showState){
+      <div class="state-container">
+        <h2>Current Signal State</h2>
+        <pre>
+        {{ postsService.state() | json }}
+      </pre
+        >
+      </div>
+      } @if(postsService.isLoading()){
       <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
       } @if(postsService.error()){
       <div class="error">Error: {{ postsService.error() }}</div>
@@ -126,12 +140,19 @@ import { generateRandomSentence } from '../../services/posts-service-helper-meth
           gap: 1rem;
           justify-content: center;
         }
+
+        .header-container {
+          display: flex;
+          justify-content: space-evenly;
+          align-items: center;
+        }
       }
     `,
   ],
 })
 export class PostsComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  showState = false;
   displayedColumns = [
     'title',
     'body',

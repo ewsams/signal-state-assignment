@@ -9,7 +9,6 @@ import {
   generateRandomName,
   generateRandomSentence,
 } from './posts-service-helper-methods';
-import { create } from 'domain';
 
 type PostsState = {
   posts: Post[];
@@ -31,7 +30,7 @@ export class PostsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://jsonplaceholder.typicode.com';
 
-  private readonly state = signalState<PostsState>({
+  readonly state = signalState<PostsState>({
     posts: [],
     comments: [],
     isLoading: false,
