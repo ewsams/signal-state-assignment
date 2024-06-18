@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { signalState, patchState } from '@ngrx/signals';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { Post } from '../models/Post.models';
+import { Comment } from '../models/Comment.model'; // Ensure correct import
 import {
   generateRandomDate,
   generateRandomEmail,
@@ -12,8 +13,8 @@ import {
 
 type PostsState = {
   posts: Post[];
-  comments: Comment[];
   isLoading: boolean;
+  comments: Comment[];
   error: string | null;
   author: {
     name: string | null;
@@ -32,8 +33,8 @@ export class PostsService {
 
   readonly state = signalState<PostsState>({
     posts: [],
-    comments: [],
     isLoading: false,
+    comments: [],
     error: null,
     author: {
       name: null,
@@ -46,7 +47,6 @@ export class PostsService {
   });
 
   readonly posts = computed(() => this.state().posts);
-  readonly comments = computed(() => this.state().comments);
   readonly isLoading = computed(() => this.state().isLoading);
   readonly error = computed(() => this.state().error);
 
@@ -57,7 +57,7 @@ export class PostsService {
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => {
-          const updatedPosts = posts.map((post) => ({
+          const loadedPosts = posts.slice(0, 10).map((post) => ({
             ...post,
             author: {
               name: generateRandomName(),
@@ -67,8 +67,9 @@ export class PostsService {
               createdAt: generateRandomDate(),
               updatedAt: '',
             },
+            comments: [],
           }));
-          this.setPosts(updatedPosts);
+          this.setPosts(loadedPosts);
           this.setLoadingState(false);
         }),
         catchError((error) => {
@@ -99,7 +100,7 @@ export class PostsService {
       .get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`)
       .pipe(
         tap((comments) => {
-          this.setComments(comments);
+          this.updateCommentsInPost(postId, comments);
           this.setLoadingState(false);
         }),
         catchError((error) => {
@@ -120,8 +121,9 @@ export class PostsService {
       },
       metadata: {
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: '',
       },
+      comments: [],
     };
     return this.http
       .post<Post>(`${this.apiUrl}/posts`, postWithMetadata)
@@ -180,7 +182,49 @@ export class PostsService {
       .subscribe();
   }
 
-  // Helper methods to patch the state
+  loadCommentsForPost(postId: number) {
+    this.setLoadingState(true);
+    return this.http
+      .get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`)
+      .pipe(
+        tap((comments) => {
+          this.updateCommentsInPost(postId, comments);
+          this.setLoadingState(false);
+        }),
+        catchError((error) => {
+          this.setErrorState(error.message);
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
+  private updateCommentsInPost(postId: number, comments: Comment[]): void {
+    patchState(this.state, (state) => ({
+      posts: state.posts.map((post) =>
+        post.id === postId ? { ...post, comments } : post
+      ),
+    }));
+  }
+
+  addCommentToPost(postId: number, comment: Comment) {
+    return this.http
+      .post<Comment>(`${this.apiUrl}/posts/${postId}/comments`, comment)
+      .pipe(
+        tap((newComment) => {
+          this.updateCommentsInPost(postId, [
+            ...(this.state().posts.find((post) => post.id === postId)
+              ?.comments || []),
+            newComment,
+          ]);
+        }),
+        catchError((error) => {
+          this.setErrorState(error.message);
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
 
   private setPosts(posts: Post[]): void {
     patchState(this.state, { posts });

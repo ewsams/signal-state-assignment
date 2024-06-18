@@ -43,6 +43,20 @@
       <mat-cell *matCellDef="let post"> {{ post.author?.email }} </mat-cell>
     </ng-container>
 
+    <!-- Comments Column -->
+    <ng-container matColumnDef="comments">
+      <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
+      <mat-cell *matCellDef="let post">
+        <ul>
+          @for (comment of post.comments; track $index) {
+          <li>
+            {{ comment.body }}
+          </li>
+          }
+        </ul>
+      </mat-cell>
+    </ng-container>
+
     <!-- Created At Column -->
     <ng-container matColumnDef="createdAt">
       <mat-header-cell *matHeaderCellDef> Created At </mat-header-cell>

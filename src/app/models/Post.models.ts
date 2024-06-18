@@ -1,3 +1,4 @@
+import { Comment } from './Comment.model';
 export interface Post {
   userId: number;
   id: number;
@@ -8,7 +9,8 @@ export interface Post {
     email: string;
   };
   metadata: {
-    createdAt: string;
-    updatedAt: string;
+    createdAt: string | null;
+    updatedAt: string | null;
   };
+  comments?: Comment[];
 }
