@@ -2,8 +2,8 @@ import {
   AfterViewInit,
   Component,
   OnInit,
-  ViewChild,
   effect,
+  viewChild,
 } from '@angular/core';
 import { Post } from '../../models/Post.models';
 import { PostsService } from '../../services/posts.service';
@@ -32,126 +32,11 @@ import { generateRandomSentence } from '../../services/posts-service-helper-meth
     DatePipe,
     JsonPipe,
   ],
-  template: `
-    <div class="container">
-      <div class="header-container">
-        <h1>Posts Example Using Signal State</h1>
-        <button mat-raised-button color="warn" (click)="showState = !showState">
-          Show Signal State
-        </button>
-      </div>
-
-      @if(showState){
-      <div class="state-container">
-        <h2>Current Signal State</h2>
-        <pre>
-        {{ postsService.state() | json }}
-      </pre
-        >
-      </div>
-      } @if(postsService.isLoading()){
-      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-      } @if(postsService.error()){
-      <div class="error">Error: {{ postsService.error() }}</div>
-      }
-      <mat-table [dataSource]="dataSource">
-        <!-- Title Column -->
-        <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
-          <mat-cell *matCellDef="let post"> {{ post.title }} </mat-cell>
-        </ng-container>
-
-        <!-- Body Column -->
-        <ng-container matColumnDef="body">
-          <mat-header-cell *matHeaderCellDef> Body </mat-header-cell>
-          <mat-cell *matCellDef="let post"> {{ post.body }} </mat-cell>
-        </ng-container>
-
-        <!-- Author Name Column -->
-        <ng-container matColumnDef="authorName">
-          <mat-header-cell *matHeaderCellDef> Author Name </mat-header-cell>
-          <mat-cell *matCellDef="let post"> {{ post.author?.name }} </mat-cell>
-        </ng-container>
-
-        <!-- Author Email Column -->
-        <ng-container matColumnDef="authorEmail">
-          <mat-header-cell *matHeaderCellDef> Author Email </mat-header-cell>
-          <mat-cell *matCellDef="let post"> {{ post.author?.email }} </mat-cell>
-        </ng-container>
-
-        <!-- Created At Column -->
-        <ng-container matColumnDef="createdAt">
-          <mat-header-cell *matHeaderCellDef> Created At </mat-header-cell>
-          <mat-cell *matCellDef="let post">
-            {{ post.metadata?.createdAt | date : 'medium' }}
-          </mat-cell>
-        </ng-container>
-
-        <!-- Updated At Column -->
-        <ng-container matColumnDef="updatedAt">
-          <mat-header-cell *matHeaderCellDef> Updated At </mat-header-cell>
-          <mat-cell *matCellDef="let post">
-            {{ post.metadata?.updatedAt | date : 'medium' }}
-          </mat-cell>
-        </ng-container>
-
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-          <mat-cell *matCellDef="let post">
-            <button mat-button (click)="updatePost(post)">Update</button>
-            <button mat-button color="warn" (click)="deletePost(post.id)">
-              Delete
-            </button>
-          </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-      </mat-table>
-
-      <mat-paginator
-        [pageSize]="5"
-        [pageSizeOptions]="[5, 10, 20]"
-      ></mat-paginator>
-
-      <div class="actions">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="postsService.loadPosts()"
-        >
-          Load New Posts
-        </button>
-        <button mat-raised-button color="accent" (click)="addPost()">
-          Add New Post
-        </button>
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .container {
-        display: flex;
-        flex-direction: column;
-        padding: 2rem;
-        .actions {
-          display: inherit;
-          gap: 1rem;
-          justify-content: center;
-        }
-
-        .header-container {
-          display: flex;
-          justify-content: space-evenly;
-          align-items: center;
-        }
-      }
-    `,
-  ],
+  templateUrl: './posts.component.html',
+  styleUrls: ['./posts.component.scss'],
 })
-export class PostsComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+export class PostsComponent implements OnInit {
+  paginator = viewChild(MatPaginator);
   showState = false;
   displayedColumns = [
     'title',
@@ -167,15 +52,12 @@ export class PostsComponent implements OnInit, AfterViewInit {
   constructor(protected readonly postsService: PostsService) {
     effect(() => {
       this.dataSource.data = this.postsService.posts();
+      this.dataSource.paginator = this.paginator()!;
     });
   }
 
   ngOnInit(): void {
     this.postsService.loadPosts();
-  }
-
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
 
   addPost(): void {
