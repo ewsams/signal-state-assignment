@@ -28,7 +28,14 @@ import { generateRandomSentence } from '../../services/posts-service-helper-meth
 })
 export class PostsComponent implements OnInit {
   paginator = viewChild.required(MatPaginator);
+  dataSource = new MatTableDataSource<Post>([]);
+
+  post = this.postsService.posts;
+  isLoading = this.postsService.isLoading;
+  isError = this.postsService.isError;
+  currentState = this.postsService.currentState;
   showState = false;
+
   displayedColumns = [
     'title',
     'body',
@@ -39,14 +46,11 @@ export class PostsComponent implements OnInit {
     'updatedAt',
     'actions',
   ];
-  dataSource = new MatTableDataSource<Post>([]);
 
   constructor(protected readonly postsService: PostsService) {
     effect(() => {
-      untracked(() => {
-        this.dataSource.data = this.postsService.posts();
-        this.dataSource.paginator = this.paginator();
-      });
+      this.dataSource.data = this.post();
+      this.dataSource.paginator = this.paginator();
     });
   }
 
@@ -75,17 +79,20 @@ export class PostsComponent implements OnInit {
   }
 
   updatePost(post: Post): void {
-    const randomTitle = `Updated Title ID: ${post.id} ${generateRandomSentence(
-      10
-    )}`;
-    const randomBody = `Updated Body ID: ${post.id} ${generateRandomSentence(
-      30
-    )}`;
-    this.postsService.updatePost(post.id, post);
+    const updatedPost: Post = {
+      ...post,
+      title: `Updated Title ID: ${post.id} ${generateRandomSentence(10)}`,
+      body: `Updated Body ID: ${post.id} ${generateRandomSentence(30)}`,
+      metadata: {
+        ...post.metadata,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+    this.postsService.updatePost(updatedPost);
   }
 
   deletePost(postId: number): void {
-    this.postsService.deletePost(postId);
+    this.postsService.removePost(postId);
   }
 
   loadComments(postId: number): void {

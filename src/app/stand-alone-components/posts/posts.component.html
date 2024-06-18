@@ -6,18 +6,24 @@
     </button>
   </div>
 
+  <!-- Show State -->
   @if(showState){
   <div class="state-container">
     <h2>Current Signal State</h2>
-    <pre>
-      {{ postsService.state() | json }}
-    </pre>
+    <pre>{{ currentState() | json }}</pre>
   </div>
-  } @if(postsService.isLoading()){
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-  } @if(postsService.error()){
-  <div class="error">Error: {{ postsService.error() }}</div>
   }
+
+  <!-- Is Loading -->
+  @if(isLoading()){
+  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  }
+
+  <!-- Is Error -->
+  @if(isError()){
+  <div class="error">Error: {{ postsService.state.error() }}</div>
+  }
+
   <mat-table [dataSource]="dataSource">
     <!-- Title Column -->
     <ng-container matColumnDef="title">
@@ -47,13 +53,7 @@
     <ng-container matColumnDef="comments">
       <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
       <mat-cell *matCellDef="let post">
-        <ul>
-          @for (comment of post.comments; track $index) {
-          <li>
-            {{ comment.body }}
-          </li>
-          }
-        </ul>
+        {{ post.comment ? post.comment : "No Comments" }}
       </mat-cell>
     </ng-container>
 

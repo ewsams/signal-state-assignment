@@ -1,14 +1,13 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signalState, patchState } from '@ngrx/signals';
-import { catchError, EMPTY, finalize, tap } from 'rxjs';
+import { catchError, EMPTY, tap } from 'rxjs';
 import { Post } from '../models/Post.models';
 import { Comment } from '../models/Comment.model';
 import {
   generateRandomDate,
   generateRandomEmail,
   generateRandomName,
-  generateRandomSentence,
 } from './posts-service-helper-methods';
 
 type PostsState = {
@@ -33,8 +32,8 @@ export class PostsService {
 
   readonly state = signalState<PostsState>({
     posts: [],
-    isLoading: false,
     comments: [],
+    isLoading: false,
     error: null,
     author: {
       name: null,
@@ -46,9 +45,11 @@ export class PostsService {
     },
   });
 
-  readonly posts = computed(() => this.state().posts);
-  readonly isLoading = computed(() => this.state().isLoading);
-  readonly error = computed(() => this.state().error);
+  readonly posts = this.state.posts;
+  readonly comments = this.state.comments;
+  readonly isLoading = this.state.isLoading;
+  readonly isError = this.state.error;
+  readonly currentState = this.state;
 
   loadPosts() {
     this.setLoadingState(true);
@@ -80,37 +81,6 @@ export class PostsService {
       .subscribe();
   }
 
-  getPostById(postId: number) {
-    this.setLoadingState(true);
-    return this.http
-      .get<Post>(`${this.apiUrl}/posts/${postId}`)
-      .pipe(
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        }),
-        finalize(() => this.setLoadingState(false))
-      )
-      .subscribe();
-  }
-
-  getPostComments(postId: number) {
-    this.setLoadingState(true);
-    return this.http
-      .get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`)
-      .pipe(
-        tap((comments) => {
-          this.updateCommentsInPost(postId, comments);
-          this.setLoadingState(false);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
   addNewPost(post: Post) {
     this.setLoadingState(true);
     const postWithMetadata: Post = {
@@ -129,49 +99,7 @@ export class PostsService {
       .post<Post>(`${this.apiUrl}/posts`, postWithMetadata)
       .pipe(
         tap((createdPost) => {
-          this.addPostToState(createdPost);
-          this.setLoadingState(false);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  updatePost(postId: number, post: Post) {
-    this.setLoadingState(true);
-    const postWithMetadata: Post = {
-      ...post,
-      body: generateRandomSentence(40),
-      metadata: {
-        createdAt: post.metadata.createdAt,
-        updatedAt: new Date().toISOString(),
-      },
-    };
-    return this.http
-      .put<Post>(`${this.apiUrl}/posts/${postId}`, postWithMetadata)
-      .pipe(
-        tap((updatedPost) => {
-          this.updatePostInState(updatedPost);
-          this.setLoadingState(false);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  deletePost(postId: number) {
-    this.setLoadingState(true);
-    return this.http
-      .delete<void>(`${this.apiUrl}/posts/${postId}`)
-      .pipe(
-        tap(() => {
-          this.removePostFromState(postId);
+          this.addPost(createdPost);
           this.setLoadingState(false);
         }),
         catchError((error) => {
@@ -230,13 +158,7 @@ export class PostsService {
     patchState(this.state, { posts });
   }
 
-  private addPostToState(post: Post): void {
-    patchState(this.state, (state) => ({
-      posts: [post, ...state.posts],
-    }));
-  }
-
-  private updatePostInState(updatedPost: Post): void {
+  updatePost(updatedPost: Post): void {
     patchState(this.state, (state) => ({
       posts: state.posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
@@ -244,21 +166,23 @@ export class PostsService {
     }));
   }
 
-  private removePostFromState(postId: number): void {
+  addPost(post: Post): void {
+    patchState(this.state, (state) => ({
+      posts: [post, ...state.posts],
+    }));
+  }
+
+  removePost(postId: number): void {
     patchState(this.state, (state) => ({
       posts: state.posts.filter((post) => post.id !== postId),
     }));
   }
 
-  private setComments(comments: Comment[]): void {
-    patchState(this.state, { comments });
-  }
-
-  private setLoadingState(isLoading: boolean): void {
+  setLoadingState(isLoading: boolean): void {
     patchState(this.state, { isLoading });
   }
 
-  private setErrorState(error: string | null): void {
+  setErrorState(error: string | null): void {
     patchState(this.state, { error });
   }
 }
