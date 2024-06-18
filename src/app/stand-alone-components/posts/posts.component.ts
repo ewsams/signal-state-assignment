@@ -36,7 +36,7 @@ import { generateRandomSentence } from '../../services/posts-service-helper-meth
   styleUrls: ['./posts.component.scss'],
 })
 export class PostsComponent implements OnInit {
-  paginator = viewChild(MatPaginator);
+  paginator = viewChild.required(MatPaginator);
   showState = false;
   displayedColumns = [
     'title',
@@ -52,7 +52,7 @@ export class PostsComponent implements OnInit {
   constructor(protected readonly postsService: PostsService) {
     effect(() => {
       this.dataSource.data = this.postsService.posts();
-      this.dataSource.paginator = this.paginator()!;
+      this.dataSource.paginator = this.paginator();
     });
   }
 
