@@ -9,21 +9,7 @@ import {
   generateRandomEmail,
   generateRandomName,
 } from './posts-service-helper-methods';
-
-type PostsState = {
-  posts: Post[];
-  isLoading: boolean;
-  comments: Comment[];
-  error: string | null;
-  author: {
-    name: string | null;
-    email: string | null;
-  };
-  metadata: {
-    createdAt: string | null;
-    updatedAt: string | null;
-  };
-};
+import { PostsState } from '../models/PostsState.type';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
@@ -52,75 +38,76 @@ export class PostsService {
   readonly currentState = this.state;
 
   loadPosts() {
-    this.setLoadingState(true);
-    this.setPosts([]);
+    this.setState({ isLoading: true, posts: [] });
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
-        tap((posts) => {
-          const loadedPosts = posts.slice(0, 10).map((post) => ({
-            ...post,
-            author: {
-              name: generateRandomName(),
-              email: generateRandomEmail(),
-            },
-            metadata: {
-              createdAt: generateRandomDate(),
-              updatedAt: '',
-            },
-            comments: [],
-          }));
-          this.setPosts(loadedPosts);
-          this.setLoadingState(false);
-        }),
+        tap((posts) => this.processPosts(posts)),
         catchError((error) => {
-          this.setErrorState(error.message);
+          this.setState({ error: error.message });
           return EMPTY;
         })
       )
       .subscribe();
   }
 
-  private setPosts(posts: Post[]): void {
-    patchState(this.state, { posts });
+  private processPosts(posts: Post[]) {
+    const loadedPosts = posts.slice(0, 10).map((post) => ({
+      ...post,
+      author: {
+        name: generateRandomName(),
+        email: generateRandomEmail(),
+      },
+      metadata: {
+        createdAt: generateRandomDate(),
+        updatedAt: '',
+      },
+      comments: [],
+    }));
+    this.setState({ posts: loadedPosts, isLoading: false });
   }
 
-  updatePost(updatedPost: Post): void {
-    patchState(this.state, (state) => ({
+  updatePost(updatedPost: Post) {
+    this.patchState((state) => ({
       posts: state.posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
     }));
   }
 
-  addCommentToPost(postId: number, comment: Comment): void {
-    const post = this.state().posts.find((p) => p.id === postId);
-    if (post) {
-      const updatedPost = {
-        ...post,
-        comments: [...(post.comments || []), comment],
-      };
-      this.updatePost(updatedPost);
-    }
+  addCommentToPost(postId: number, comment: Comment) {
+    this.patchState((state) => {
+      const post = state.posts.find((p) => p.id === postId);
+      if (post) {
+        const updatedPost = {
+          ...post,
+          comments: [...(post.comments || []), comment],
+        };
+        return {
+          posts: state.posts.map((p) => (p.id === postId ? updatedPost : p)),
+        };
+      }
+      return {};
+    });
   }
 
-  addPost(post: Post): void {
-    patchState(this.state, (state) => ({
+  addPost(post: Post) {
+    this.patchState((state) => ({
       posts: [post, ...state.posts],
     }));
   }
 
-  removePost(postId: number): void {
-    patchState(this.state, (state) => ({
+  removePost(postId: number) {
+    this.patchState((state) => ({
       posts: state.posts.filter((post) => post.id !== postId),
     }));
   }
 
-  setLoadingState(isLoading: boolean): void {
-    patchState(this.state, { isLoading });
+  private setState(newState: Partial<PostsState>) {
+    patchState(this.state, newState);
   }
 
-  setErrorState(error: string | null): void {
-    patchState(this.state, { error });
+  private patchState(patchFn: (state: PostsState) => Partial<PostsState>) {
+    patchState(this.state, patchFn(this.state()));
   }
 }
