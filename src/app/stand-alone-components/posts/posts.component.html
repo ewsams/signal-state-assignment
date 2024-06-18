@@ -1,22 +1,47 @@
 <div class="container">
   <div class="header-container">
-    <h1>Posts Example Using Signal State</h1>
-    <button mat-raised-button color="warn" (click)="showState = !showState">
-      Show Signal State
-    </button>
+    <h1 class="title">Posts Example Using Signal State</h1>
+    <div class="actions">
+      <button
+        mat-raised-button
+        color="warn"
+        class="show-state-button"
+        (click)="showState = !showState"
+      >
+        Show Signal State
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        class="load-posts-button"
+        (click)="postsService.loadPosts()"
+      >
+        Load New Posts
+      </button>
+      <button
+        mat-raised-button
+        color="accent"
+        class="add-post-button"
+        (click)="addPost()"
+      >
+        Add New Post
+      </button>
+    </div>
   </div>
 
   <!-- Show State -->
   @if(showState){
   <div class="state-container">
-    <h2>Current Signal State</h2>
-    <pre>{{ currentState() | json }}</pre>
+    <h2 class="state-title">Current Signal State</h2>
+    <pre class="state-pre">{{ currentState() | json }}</pre>
   </div>
   }
 
   <!-- Is Loading -->
   @if(isLoading()){
-  <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  <div class="loading-spinner">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+  </div>
   }
 
   <!-- Is Error -->
@@ -24,36 +49,52 @@
   <div class="error">Error: {{ error() }}</div>
   }
 
-  <mat-table [dataSource]="dataSource">
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
     <!-- Title Column -->
     <ng-container matColumnDef="title">
-      <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
-      <mat-cell *matCellDef="let post"> {{ post.title }} </mat-cell>
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Title
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
+        {{ post.title }}
+      </mat-cell>
     </ng-container>
 
     <!-- Body Column -->
     <ng-container matColumnDef="body">
-      <mat-header-cell *matHeaderCellDef> Body </mat-header-cell>
-      <mat-cell *matCellDef="let post"> {{ post.body }} </mat-cell>
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Body
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell"> {{ post.body }} </mat-cell>
     </ng-container>
 
     <!-- Author Name Column -->
     <ng-container matColumnDef="authorName">
-      <mat-header-cell *matHeaderCellDef> Author Name </mat-header-cell>
-      <mat-cell *matCellDef="let post"> {{ post.author?.name }} </mat-cell>
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Author Name
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
+        {{ post.author?.name }}
+      </mat-cell>
     </ng-container>
 
     <!-- Author Email Column -->
     <ng-container matColumnDef="authorEmail">
-      <mat-header-cell *matHeaderCellDef> Author Email </mat-header-cell>
-      <mat-cell *matCellDef="let post"> {{ post.author?.email }} </mat-cell>
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Author Email
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
+        {{ post.author?.email }}
+      </mat-cell>
     </ng-container>
 
     <!-- Comments Column -->
     <ng-container matColumnDef="comments">
-      <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
-      <mat-cell *matCellDef="let post">
-        <span>
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Comments
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
+        <span class="comments">
           {{ post.comments.length ? (post.comments | json) : "No Comments" }}
         </span>
       </mat-cell>
@@ -61,48 +102,76 @@
 
     <!-- Created At Column -->
     <ng-container matColumnDef="createdAt">
-      <mat-header-cell *matHeaderCellDef> Created At </mat-header-cell>
-      <mat-cell *matCellDef="let post">
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Created At
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
         {{ post.metadata?.createdAt | date : "medium" }}
       </mat-cell>
     </ng-container>
 
     <!-- Updated At Column -->
     <ng-container matColumnDef="updatedAt">
-      <mat-header-cell *matHeaderCellDef> Updated At </mat-header-cell>
-      <mat-cell *matCellDef="let post">
+      <mat-header-cell *matHeaderCellDef class="header-cell">
+        Updated At
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell">
         {{ post.metadata?.updatedAt | date : "medium" }}
       </mat-cell>
     </ng-container>
 
     <!-- Actions Column -->
     <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-      <mat-cell *matCellDef="let post">
-        <button mat-button (click)="updatePost(post)">Update</button>
-        <button mat-button (click)="addComment(post.id)">Add Comment</button>
-        <button mat-button color="warn" (click)="deletePost(post.id)">
-          Delete
+      <mat-header-cell *matHeaderCellDef class="header-cell actions-header">
+        Actions
+      </mat-header-cell>
+      <mat-cell *matCellDef="let post" class="cell actions-cell">
+        <button
+          mat-mini-fab
+          color="primary"
+          class="action-button update-button"
+          matTooltip="Update post"
+          matTooltipPosition="above"
+          (click)="updatePost(post)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="accent"
+          class="action-button comment-button"
+          matTooltip="Add comment"
+          matTooltipPosition="above"
+          (click)="addComment(post.id)"
+        >
+          <mat-icon>comment</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          color="warn"
+          class="action-button delete-button"
+          matTooltip="Delete post"
+          matTooltipPosition="above"
+          (click)="deletePost(post.id)"
+        >
+          <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    <mat-header-row
+      *matHeaderRowDef="displayedColumns"
+      class="header-row"
+    ></mat-header-row>
+    <mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      class="row"
+    ></mat-row>
   </mat-table>
 
-  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
-
-  <div class="actions">
-    <button
-      mat-raised-button
-      color="primary"
-      (click)="postsService.loadPosts()"
-    >
-      Load New Posts
-    </button>
-    <button mat-raised-button color="accent" (click)="addPost()">
-      Add New Post
-    </button>
-  </div>
+  <mat-paginator
+    [pageSize]="5"
+    [pageSizeOptions]="[5, 10, 20]"
+    class="paginator"
+  ></mat-paginator>
 </div>

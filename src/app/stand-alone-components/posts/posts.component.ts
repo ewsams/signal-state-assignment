@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, untracked, viewChild } from '@angular/core';
+import { Component, OnInit, effect, viewChild } from '@angular/core';
 import { Post } from '../../models/Post.models';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
@@ -7,7 +7,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   generateRandomEmail,
   generateRandomName,
@@ -26,6 +28,8 @@ import {
     DatePipe,
     JsonPipe,
     MatProgressSpinnerModule,
+    MatIconModule,
+    MatTooltipModule,
   ],
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.scss'],
@@ -58,11 +62,11 @@ export class PostsComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.postsService.loadPosts();
   }
 
-  addPost(): void {
+  addPost() {
     const id = Math.floor(Math.random() * 1000);
     const newPost: Post = {
       userId: 1,
@@ -83,7 +87,7 @@ export class PostsComponent implements OnInit {
     this.postsService.addPost(newPost);
   }
 
-  updatePost(post: Post): void {
+  updatePost(post: Post) {
     const updatedPost: Post = {
       ...post,
       title: `Updated Title ID: ${post.id} ${generateRandomSentence(10)}`,
@@ -96,11 +100,11 @@ export class PostsComponent implements OnInit {
     this.postsService.updatePost(updatedPost);
   }
 
-  deletePost(postId: number): void {
+  deletePost(postId: number) {
     this.postsService.removePost(postId);
   }
 
-  addComment(postId: number): void {
+  addComment(postId: number) {
     const newComment: Comment = {
       postId,
       id: Math.floor(Math.random() * 1000),
