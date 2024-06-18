@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { signalState, patchState } from '@ngrx/signals';
 import { catchError, EMPTY, finalize, tap } from 'rxjs';
 import { Post } from '../models/Post.models';
-import { Comment } from '../models/Comment.model'; // Ensure correct import
+import { Comment } from '../models/Comment.model';
 import {
   generateRandomDate,
   generateRandomEmail,
