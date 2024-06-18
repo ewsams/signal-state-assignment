@@ -14,14 +14,11 @@ export class FormatCommentsPipe implements PipeTransform {
     return comments
       .map(
         (comment, index) => `
-╔═════════════════════════════════════════╗
-║ Comment ${index + 1}:
-║ Name: ${comment.name}
-║ Email: ${comment.email}
-║ Body:
-${this.formatBody(comment.body, maxLength)}
-╚═════════════════════════════════════════╝
-        `
+=====================        
+Comment ${index + 1}: 
+║ Name: ${comment.name} 
+║ Email: ${comment.email} 
+║ Body: ${this.formatBody(comment.body, maxLength)}`
       )
       .join('\n');
   }

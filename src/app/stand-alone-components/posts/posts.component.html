@@ -95,11 +95,7 @@
       </mat-header-cell>
       <mat-cell *matCellDef="let post" class="cell">
         <span>
-          {{
-            post.comments.length
-              ? (post.comments | formatComments)
-              : "No Comments"
-          }}
+          {{ post.comments | formatComments }}
         </span>
       </mat-cell>
     </ng-container>

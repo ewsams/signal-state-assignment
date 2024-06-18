@@ -38,13 +38,13 @@ export class PostsService {
   readonly currentState = this.state;
 
   loadPosts() {
-    this.setState({ isLoading: true, posts: [] });
+    patchState(this.state, { isLoading: true, posts: [] });
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => this.processPosts(posts)),
         catchError((error) => {
-          this.setState({ error: error.message });
+          patchState(this.state, { error: error.message });
           return EMPTY;
         })
       )
@@ -52,7 +52,7 @@ export class PostsService {
   }
 
   updatePost(updatedPost: Post) {
-    this.patchState((state) => ({
+    patchState(this.state, (state) => ({
       posts: state.posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
@@ -60,7 +60,7 @@ export class PostsService {
   }
 
   addCommentToPost(postId: number, comment: Comment) {
-    this.patchState((state) => {
+    patchState(this.state, (state) => {
       const post = state.posts.find((p) => p.id === postId);
       if (post) {
         const updatedPost = {
@@ -76,13 +76,13 @@ export class PostsService {
   }
 
   addPost(post: Post) {
-    this.patchState((state) => ({
+    patchState(this.state, (state) => ({
       posts: [post, ...state.posts],
     }));
   }
 
   removePost(postId: number) {
-    this.patchState((state) => ({
+    patchState(this.state, (state) => ({
       posts: state.posts.filter((post) => post.id !== postId),
     }));
   }
@@ -100,14 +100,6 @@ export class PostsService {
       },
       comments: [],
     }));
-    this.setState({ posts: loadedPosts, isLoading: false });
-  }
-
-  private setState(newState: Partial<PostsState>) {
-    patchState(this.state, newState);
-  }
-
-  private patchState(patchFn: (state: PostsState) => Partial<PostsState>) {
-    patchState(this.state, patchFn(this.state()));
+    patchState(this.state, { posts: loadedPosts, isLoading: false });
   }
 }
