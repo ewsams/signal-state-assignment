@@ -4,7 +4,7 @@ import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { DatePipe, JsonPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,7 +27,6 @@ import { FormatCommentsPipe } from '../../directives/FormatComments';
     MatPaginatorModule,
     MatTableModule,
     DatePipe,
-    JsonPipe,
     MatProgressSpinnerModule,
     MatIconModule,
     MatTooltipModule,
