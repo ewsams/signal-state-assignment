@@ -53,7 +53,9 @@
     <ng-container matColumnDef="comments">
       <mat-header-cell *matHeaderCellDef> Comments </mat-header-cell>
       <mat-cell *matCellDef="let post">
-        {{ post.comment ? post.comment : "No Comments" }}
+        <span>
+          {{ post.comments.length ? (post.comments | json) : "No Comments" }}
+        </span>
       </mat-cell>
     </ng-container>
 
@@ -78,6 +80,7 @@
       <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
       <mat-cell *matCellDef="let post">
         <button mat-button (click)="updatePost(post)">Update</button>
+        <button mat-button (click)="addComment(post.id)">Add Comment</button>
         <button mat-button color="warn" (click)="deletePost(post.id)">
           Delete
         </button>

@@ -8,7 +8,11 @@ import { DatePipe, JsonPipe } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { generateRandomSentence } from '../../services/posts-service-helper-methods';
+import {
+  generateRandomEmail,
+  generateRandomName,
+  generateRandomSentence,
+} from '../../services/posts-service-helper-methods';
 
 @Component({
   selector: 'app-posts',
@@ -66,16 +70,17 @@ export class PostsComponent implements OnInit {
       title: `New Post ID: #${id} ${generateRandomSentence(10)}`,
       body: `This is a new post ${generateRandomSentence(30)} it's ID is ${id}`,
       author: {
-        name: '',
-        email: '',
+        name: generateRandomName(),
+        email: generateRandomEmail(),
       },
       metadata: {
-        createdAt: '',
+        createdAt: new Date().toISOString(),
         updatedAt: '',
       },
+      comments: [],
     };
 
-    this.postsService.addNewPost(newPost);
+    this.postsService.addPost(newPost);
   }
 
   updatePost(post: Post): void {
@@ -95,17 +100,13 @@ export class PostsComponent implements OnInit {
     this.postsService.removePost(postId);
   }
 
-  loadComments(postId: number): void {
-    this.postsService.loadCommentsForPost(postId);
-  }
-
   addComment(postId: number): void {
     const newComment: Comment = {
       postId,
       id: Math.floor(Math.random() * 1000),
       name: 'Random Commenter',
       email: 'random@example.com',
-      body: 'This is a random comment.',
+      body: generateRandomSentence(30),
     };
     this.postsService.addCommentToPost(postId, newComment);
   }

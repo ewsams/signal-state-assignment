@@ -1,4 +1,4 @@
-import { Injectable, computed, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signalState, patchState } from '@ngrx/signals';
 import { catchError, EMPTY, tap } from 'rxjs';
@@ -81,79 +81,6 @@ export class PostsService {
       .subscribe();
   }
 
-  addNewPost(post: Post) {
-    this.setLoadingState(true);
-    const postWithMetadata: Post = {
-      ...post,
-      author: {
-        name: generateRandomName(),
-        email: generateRandomEmail(),
-      },
-      metadata: {
-        createdAt: new Date().toISOString(),
-        updatedAt: '',
-      },
-      comments: [],
-    };
-    return this.http
-      .post<Post>(`${this.apiUrl}/posts`, postWithMetadata)
-      .pipe(
-        tap((createdPost) => {
-          this.addPost(createdPost);
-          this.setLoadingState(false);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  loadCommentsForPost(postId: number) {
-    this.setLoadingState(true);
-    return this.http
-      .get<Comment[]>(`${this.apiUrl}/posts/${postId}/comments`)
-      .pipe(
-        tap((comments) => {
-          this.updateCommentsInPost(postId, comments);
-          this.setLoadingState(false);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
-  private updateCommentsInPost(postId: number, comments: Comment[]): void {
-    patchState(this.state, (state) => ({
-      posts: state.posts.map((post) =>
-        post.id === postId ? { ...post, comments } : post
-      ),
-    }));
-  }
-
-  addCommentToPost(postId: number, comment: Comment) {
-    return this.http
-      .post<Comment>(`${this.apiUrl}/posts/${postId}/comments`, comment)
-      .pipe(
-        tap((newComment) => {
-          this.updateCommentsInPost(postId, [
-            ...(this.state().posts.find((post) => post.id === postId)
-              ?.comments || []),
-            newComment,
-          ]);
-        }),
-        catchError((error) => {
-          this.setErrorState(error.message);
-          return EMPTY;
-        })
-      )
-      .subscribe();
-  }
-
   private setPosts(posts: Post[]): void {
     patchState(this.state, { posts });
   }
@@ -164,6 +91,17 @@ export class PostsService {
         post.id === updatedPost.id ? updatedPost : post
       ),
     }));
+  }
+
+  addCommentToPost(postId: number, comment: Comment): void {
+    const post = this.state().posts.find((p) => p.id === postId);
+    if (post) {
+      const updatedPost = {
+        ...post,
+        comments: [...(post.comments || []), comment],
+      };
+      this.updatePost(updatedPost);
+    }
   }
 
   addPost(post: Post): void {
