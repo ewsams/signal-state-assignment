@@ -8,7 +8,7 @@
         class="show-state-button"
         (click)="showState = !showState"
       >
-        Show Signal State
+        {{ showState ? "Hide Signal State" : "Show Signal State" }}
       </button>
       <button
         mat-raised-button
@@ -90,12 +90,16 @@
 
     <!-- Comments Column -->
     <ng-container matColumnDef="comments">
-      <mat-header-cell *matHeaderCellDef class="header-cell">
+      <mat-header-cell *matHeaderCellDef class="header-cell comments-header">
         Comments
       </mat-header-cell>
       <mat-cell *matCellDef="let post" class="cell">
-        <span class="comments">
-          {{ post.comments.length ? (post.comments | json) : "No Comments" }}
+        <span>
+          {{
+            post.comments.length
+              ? (post.comments | formatComments)
+              : "No Comments"
+          }}
         </span>
       </mat-cell>
     </ng-container>

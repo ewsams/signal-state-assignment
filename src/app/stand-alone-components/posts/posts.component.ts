@@ -15,6 +15,7 @@ import {
   generateRandomName,
   generateRandomSentence,
 } from '../../services/posts-service-helper-methods';
+import { FormatCommentsPipe } from '../../directives/FormatComments';
 
 @Component({
   selector: 'app-posts',
@@ -30,6 +31,7 @@ import {
     MatProgressSpinnerModule,
     MatIconModule,
     MatTooltipModule,
+    FormatCommentsPipe,
   ],
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.scss'],

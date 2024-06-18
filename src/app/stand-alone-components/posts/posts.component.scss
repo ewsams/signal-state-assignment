@@ -84,4 +84,15 @@
       padding: 10px 20px;
     }
   }
+
+  .comments-header {
+    width: 400px;
+  }
+
+  .comments-cell {
+    width: 400px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
