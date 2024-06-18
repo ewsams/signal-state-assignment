@@ -51,22 +51,6 @@ export class PostsService {
       .subscribe();
   }
 
-  private processPosts(posts: Post[]) {
-    const loadedPosts = posts.slice(0, 10).map((post) => ({
-      ...post,
-      author: {
-        name: generateRandomName(),
-        email: generateRandomEmail(),
-      },
-      metadata: {
-        createdAt: generateRandomDate(),
-        updatedAt: '',
-      },
-      comments: [],
-    }));
-    this.setState({ posts: loadedPosts, isLoading: false });
-  }
-
   updatePost(updatedPost: Post) {
     this.patchState((state) => ({
       posts: state.posts.map((post) =>
@@ -101,6 +85,22 @@ export class PostsService {
     this.patchState((state) => ({
       posts: state.posts.filter((post) => post.id !== postId),
     }));
+  }
+
+  private processPosts(posts: Post[]) {
+    const loadedPosts = posts.slice(0, 10).map((post) => ({
+      ...post,
+      author: {
+        name: generateRandomName(),
+        email: generateRandomEmail(),
+      },
+      metadata: {
+        createdAt: generateRandomDate(),
+        updatedAt: '',
+      },
+      comments: [],
+    }));
+    this.setState({ posts: loadedPosts, isLoading: false });
   }
 
   private setState(newState: Partial<PostsState>) {
