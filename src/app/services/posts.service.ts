@@ -34,7 +34,7 @@ export class PostsService {
   readonly posts = this.state.posts;
   readonly comments = this.state.comments;
   readonly isLoading = this.state.isLoading;
-  readonly isError = this.state.error;
+  readonly error = this.state.error;
   readonly currentState = this.state;
 
   loadPosts() {

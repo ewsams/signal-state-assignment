@@ -36,7 +36,7 @@ export class PostsComponent implements OnInit {
 
   post = this.postsService.posts;
   isLoading = this.postsService.isLoading;
-  isError = this.postsService.isError;
+  error = this.postsService.error;
   currentState = this.postsService.currentState;
   showState = false;
 
@@ -104,8 +104,8 @@ export class PostsComponent implements OnInit {
     const newComment: Comment = {
       postId,
       id: Math.floor(Math.random() * 1000),
-      name: 'Random Commenter',
-      email: 'random@example.com',
+      name: generateRandomName(),
+      email: generateRandomEmail(),
       body: generateRandomSentence(30),
     };
     this.postsService.addCommentToPost(postId, newComment);

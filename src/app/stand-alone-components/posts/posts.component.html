@@ -20,8 +20,8 @@
   }
 
   <!-- Is Error -->
-  @if(isError()){
-  <div class="error">Error: {{ postsService.state.error() }}</div>
+  @if(error()){
+  <div class="error">Error: {{ error() }}</div>
   }
 
   <mat-table [dataSource]="dataSource">
