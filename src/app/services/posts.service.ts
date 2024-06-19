@@ -42,9 +42,12 @@ export class PostsService {
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
-        tap((posts) => this.processPosts(posts)),
+        tap((posts) => {
+          const processedPosts = this.processPosts(posts);
+          patchState(this.state, { posts: processedPosts, isLoading: false });
+        }),
         catchError((error) => {
-          patchState(this.state, { error: error.message });
+          patchState(this.state, { error: error.message, isLoading: false });
           return EMPTY;
         })
       )
@@ -68,7 +71,9 @@ export class PostsService {
           comments: [...(post.comments || []), comment],
         };
         return {
-          posts: state.posts.map((p) => (p.id === postId ? updatedPost : p)),
+          posts: state.posts.map((post) =>
+            post.id === postId ? updatedPost : post
+          ),
         };
       }
       return {};
@@ -87,8 +92,8 @@ export class PostsService {
     }));
   }
 
-  private processPosts(posts: Post[]) {
-    const loadedPosts = posts.slice(0, 10).map((post) => ({
+  private processPosts(posts: Post[]): Post[] {
+    return posts.slice(0, 10).map((post) => ({
       ...post,
       author: {
         name: generateRandomName(),
@@ -100,6 +105,5 @@ export class PostsService {
       },
       comments: [],
     }));
-    patchState(this.state, { posts: loadedPosts, isLoading: false });
   }
 }
