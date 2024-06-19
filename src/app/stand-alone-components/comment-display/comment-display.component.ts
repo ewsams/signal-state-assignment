@@ -3,6 +3,7 @@ import { MatIcon } from '@angular/material/icon';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
 import { MatMiniFabButton } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import {
   generateRandomSentence,
   generateRandomEmail,
@@ -12,7 +13,7 @@ import {
 @Component({
   selector: 'app-comment-display',
   standalone: true,
-  imports: [MatIcon, MatMiniFabButton],
+  imports: [MatIcon, MatMiniFabButton, MatCardModule],
   templateUrl: './comment-display.component.html',
   styleUrl: './comment-display.component.scss',
 })

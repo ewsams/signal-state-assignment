@@ -1,5 +1,5 @@
 @for (comment of comments(); track $index) {
-<div class="comment">
+<mat-card>
   <div><strong>Comment:</strong> {{ $index + 1 }}:</div>
   <div><strong>Name:</strong> {{ comment.name }}</div>
   <div><strong>Email:</strong>{{ comment.email }}</div>
@@ -21,7 +21,7 @@
       <mat-icon>delete</mat-icon>
     </button>
   </div>
-</div>
+</mat-card>
 } @if (!comments().length) {
 <strong>No comments found.</strong>
 }

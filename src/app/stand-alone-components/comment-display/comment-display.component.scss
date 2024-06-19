@@ -1,5 +1,13 @@
 .btn-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+
+  button {
+    margin-right: 4px;
+  }
+}
+
+mat-card {
+  display: flex;
   padding: 10px;
 }
