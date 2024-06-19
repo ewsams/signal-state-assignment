@@ -15,7 +15,6 @@ import {
   generateRandomName,
   generateRandomSentence,
 } from '../../services/posts-service-helper-methods';
-import { FormatCommentsPipe } from '../../directives/FormatComments';
 import { CommentDisplayComponent } from '../comment-display/comment-display.component';
 
 @Component({
