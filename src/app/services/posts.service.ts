@@ -39,16 +39,16 @@ export class PostsService {
   readonly currentState = this.state;
 
   loadPosts() {
-    patchState(this.state, { isLoading: true, posts: [] });
+    this.updateState({ isLoading: true, posts: [] });
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => {
           const processedPosts = this.processPosts(posts);
-          patchState(this.state, { posts: processedPosts, isLoading: false });
+          this.updateState({ posts: processedPosts, isLoading: false });
         }),
         catchError((error) => {
-          patchState(this.state, { error: error.message, isLoading: false });
+          this.updateState({ error: error.message, isLoading: false });
           return EMPTY;
         })
       )
@@ -56,7 +56,7 @@ export class PostsService {
   }
 
   updatePost(updatedPost: Post) {
-    patchState(this.state, (state) => ({
+    this.modifyState((state) => ({
       posts: state.posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
@@ -64,7 +64,7 @@ export class PostsService {
   }
 
   addCommentToPost(postId: number, comment: Comment) {
-    patchState(this.state, (state) => {
+    this.modifyState((state) => {
       const post = state.posts.find((p) => p.id === postId);
       if (post) {
         const updatedPost = {
@@ -77,12 +77,12 @@ export class PostsService {
           ),
         };
       }
-      return {};
+      return state;
     });
   }
 
   removeCommentFromPost(postId: number, commentId: number) {
-    patchState(this.state, (state) => {
+    this.modifyState((state) => {
       const post = state.posts.find((p) => p.id === postId);
       if (post) {
         const updatedPost = {
@@ -97,12 +97,12 @@ export class PostsService {
           ),
         };
       }
-      return {};
+      return state;
     });
   }
 
   updateCommentForPost(postId: number, updatedComment: Comment) {
-    patchState(this.state, (state) => {
+    this.modifyState((state) => {
       const post = state.posts.find((p) => p.id === postId);
       if (post) {
         const updatedPost = {
@@ -117,18 +117,18 @@ export class PostsService {
           ),
         };
       }
-      return {};
+      return state;
     });
   }
 
   addPost(post: Post) {
-    patchState(this.state, (state) => ({
+    this.modifyState((state) => ({
       posts: [post, ...state.posts],
     }));
   }
 
   removePost(postId: number) {
-    patchState(this.state, (state) => ({
+    this.modifyState((state) => ({
       posts: state.posts.filter((post) => post.id !== postId),
     }));
   }
@@ -147,5 +147,20 @@ export class PostsService {
       },
       comments: [],
     }));
+  }
+
+  /**
+   * Directly update the state with a new partial state object.
+   * @param newState - The new partial state to apply.
+   */
+  private updateState(newState: Partial<PostsState>) {
+    patchState(this.state, { ...this.state(), ...newState });
+  }
+  /**
+   * Modify the state based on a function that returns a partial state.
+   * @param patchFn - A function that takes the current state and returns a partial state.
+   */
+  private modifyState(patchFn: (state: PostsState) => Partial<PostsState>) {
+    patchState(this.state, { ...this.state(), ...patchFn(this.state()) });
   }
 }
