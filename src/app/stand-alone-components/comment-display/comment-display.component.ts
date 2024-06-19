@@ -33,7 +33,7 @@ export class CommentDisplayComponent {
       ...comment,
       name: generateRandomName(),
       email: generateRandomEmail(),
-      body: generateRandomSentence(30),
+      body: generateRandomSentence(10),
     };
     this.postService.updateCommentForPost(postId, updatedComment);
   }
