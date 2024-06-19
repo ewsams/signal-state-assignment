@@ -1,23 +1,27 @@
 @for (comment of comments(); track $index) {
 <div class="comment">
-  <div>Comment {{ $index + 1 }}:</div>
-  <div>Name: {{ comment.name }}</div>
-  <div>Email: {{ comment.email }}</div>
-  <div>Body: {{ comment.body }}</div>
-  <div>Post Id: {{ comment.postId }}</div>
-  <button
-    mat-mini-fab
-    color="primary"
-    (click)="onUpdateComment(comment.postId, comment)"
-  >
-    <mat-icon>edit</mat-icon>
-  </button>
-  <button
-    mat-mini-fab
-    color="warn"
-    (click)="onRemoveComment(comment.postId, comment.id)"
-  >
-    <mat-icon>delete</mat-icon>
-  </button>
+  <div><strong>Comment:</strong> {{ $index + 1 }}:</div>
+  <div><strong>Name:</strong> {{ comment.name }}</div>
+  <div><strong>Email:</strong>{{ comment.email }}</div>
+  <div><strong>Body:</strong> {{ comment.body }}</div>
+  <div><strong>Post Id:</strong> {{ comment.postId }}</div>
+  <div class="btn-container">
+    <button
+      mat-mini-fab
+      color="primary"
+      (click)="onUpdateComment(comment.postId, comment)"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button
+      mat-mini-fab
+      color="warn"
+      (click)="onRemoveComment(comment.postId, comment.id)"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>
+} @if (!comments().length) {
+<strong>No comments found.</strong>
 }

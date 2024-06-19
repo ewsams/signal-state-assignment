@@ -2,11 +2,17 @@ import { Component, inject, input, output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
+import { MatMiniFabButton } from '@angular/material/button';
+import {
+  generateRandomSentence,
+  generateRandomEmail,
+  generateRandomName,
+} from '../../services/posts-service-helper-methods';
 
 @Component({
   selector: 'app-comment-display',
   standalone: true,
-  imports: [MatIcon],
+  imports: [MatIcon, MatMiniFabButton],
   templateUrl: './comment-display.component.html',
   styleUrl: './comment-display.component.scss',
 })
@@ -23,6 +29,12 @@ export class CommentDisplayComponent {
   }
 
   onUpdateComment(postId: number, comment: Comment) {
-    this.postService.updateCommentForPost(postId, comment);
+    const updatedComment = {
+      ...comment,
+      name: generateRandomName(),
+      email: generateRandomEmail(),
+      body: generateRandomSentence(30),
+    };
+    this.postService.updateCommentForPost(postId, updatedComment);
   }
 }
