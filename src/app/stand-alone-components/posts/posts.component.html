@@ -94,9 +94,7 @@
         Comments
       </mat-header-cell>
       <mat-cell *matCellDef="let post" class="cell">
-        <span>
-          {{ post.comments | formatComments }}
-        </span>
+        <app-comment-display [comments]="post.comments"></app-comment-display>
       </mat-cell>
     </ng-container>
 
