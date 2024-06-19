@@ -39,16 +39,24 @@ export class PostsService {
   readonly currentState = this.state;
 
   loadPosts() {
-    this.updateState({ isLoading: true, posts: [] });
+    patchState(this.state, { ...this.state(), isLoading: true, posts: [] });
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => {
           const processedPosts = this.processPosts(posts);
-          this.updateState({ posts: processedPosts, isLoading: false });
+          patchState(this.state, {
+            ...this.state(),
+            posts: processedPosts,
+            isLoading: false,
+          });
         }),
         catchError((error) => {
-          this.updateState({ error: error.message, isLoading: false });
+          patchState(this.state, {
+            ...this.state(),
+            error: error.message,
+            isLoading: false,
+          });
           return EMPTY;
         })
       )
@@ -56,81 +64,72 @@ export class PostsService {
   }
 
   updatePost(updatedPost: Post) {
-    this.modifyState((state) => ({
-      posts: state.posts.map((post) =>
+    patchState(this.state, {
+      ...this.state(),
+      posts: this.state().posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
-    }));
+    });
   }
 
   addCommentToPost(postId: number, comment: Comment) {
-    this.modifyState((state) => {
-      const post = state.posts.find((p) => p.id === postId);
-      if (post) {
-        const updatedPost = {
-          ...post,
-          comments: [...(post.comments ?? []), comment],
-        };
-        return {
-          posts: state.posts.map((post) =>
-            post.id === postId ? updatedPost : post
-          ),
-        };
-      }
-      return state;
+    patchState(this.state, {
+      ...this.state(),
+      posts: this.state().posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              comments: [...(post.comments ?? []), comment],
+            }
+          : post
+      ),
     });
   }
 
   removeCommentFromPost(postId: number, commentId: number) {
-    this.modifyState((state) => {
-      const post = state.posts.find((p) => p.id === postId);
-      if (post) {
-        const updatedPost = {
-          ...post,
-          comments: (post.comments ?? []).filter(
-            (comment) => comment.id !== commentId
-          ),
-        };
-        return {
-          posts: state.posts.map((post) =>
-            post.id === postId ? updatedPost : post
-          ),
-        };
-      }
-      return state;
+    patchState(this.state, {
+      ...this.state(),
+      posts: this.state().posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              comments: (post.comments ?? []).filter(
+                (comment) => comment.id !== commentId
+              ),
+            }
+          : post
+      ),
     });
   }
 
   updateCommentForPost(postId: number, updatedComment: Comment) {
-    this.modifyState((state) => {
-      const post = state.posts.find((p) => p.id === postId);
-      if (post) {
-        const updatedPost = {
-          ...post,
-          comments: (post.comments ?? []).map((comment) =>
-            comment.id === updatedComment.id ? updatedComment : comment
-          ),
-        };
-        return {
-          posts: state.posts.map((post) =>
-            post.id === postId ? updatedPost : post
-          ),
-        };
-      }
-      return state;
+    patchState(this.state, {
+      ...this.state(),
+      posts: this.state().posts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              comments: (post.comments ?? []).map((comment) =>
+                comment.id === updatedComment.id ? updatedComment : comment
+              ),
+            }
+          : post
+      ),
     });
   }
 
   addPost(post: Post) {
-    this.modifyState((state) => ({
-      posts: [post, ...state.posts],
-    }));
+    patchState(this.state, {
+      ...this.state(),
+      posts: [post, ...this.state().posts],
+    });
   }
 
   removePost(postId: number) {
-    this.modifyState((state) => ({
-      posts: state.posts.filter((post) => post.id !== postId),
-    }));
+    patchState(this.state, {
+      ...this.state(),
+      posts: this.state().posts.filter((post) => post.id !== postId),
+    });
   }
 
   private processPosts(posts: Post[]): Post[] {
@@ -147,20 +146,5 @@ export class PostsService {
       },
       comments: [],
     }));
-  }
-
-  /**
-   * Directly update the state with a new partial state object.
-   * @param newState - The new partial state to apply.
-   */
-  private updateState(newState: Partial<PostsState>) {
-    patchState(this.state, { ...this.state(), ...newState });
-  }
-  /**
-   * Modify the state based on a function that returns a partial state.
-   * @param patchFn - A function that takes the current state and returns a partial state.
-   */
-  private modifyState(patchFn: (state: PostsState) => Partial<PostsState>) {
-    patchState(this.state, { ...this.state(), ...patchFn(this.state()) });
   }
 }

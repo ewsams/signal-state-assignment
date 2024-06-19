@@ -92,6 +92,10 @@ export class PostsComponent implements OnInit {
   updatePost(post: Post) {
     const updatedPost: Post = {
       ...post,
+      author: {
+        name: generateRandomName(),
+        email: generateRandomEmail(),
+      },
       title: `Updated Title ID: ${post.id} ${generateRandomSentence(10)}`,
       body: `Updated Body ID: ${post.id} ${generateRandomSentence(20)}`,
       metadata: {
