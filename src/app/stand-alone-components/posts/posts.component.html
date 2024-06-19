@@ -6,9 +6,9 @@
         mat-raised-button
         color="warn"
         class="show-state-button"
-        (click)="showState = !showState"
+        (click)="toggleShowState()"
       >
-        {{ showState ? "Hide Signal State" : "Show Signal State" }}
+        {{ showState() ? "Hide Signal State" : "Show Signal State" }}
       </button>
       <button
         mat-raised-button
@@ -30,7 +30,7 @@
   </div>
 
   <!-- Show State -->
-  @if(showState){
+  @if(showState()){
   <div class="state-container">
     <h2 class="state-title">Current Signal State</h2>
     <pre class="state-pre">{{ currentState() | json }}</pre>

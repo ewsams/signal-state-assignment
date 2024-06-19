@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, viewChild } from '@angular/core';
+import { Component, OnInit, effect, signal, viewChild } from '@angular/core';
 import { Post } from '../../models/Post.models';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
@@ -44,7 +44,7 @@ export class PostsComponent implements OnInit {
   isLoading = this.postsService.isLoading;
   error = this.postsService.error;
   currentState = this.postsService.currentState;
-  showState = false;
+  showState = signal(false);
 
   displayedColumns = [
     'title',
@@ -119,5 +119,9 @@ export class PostsComponent implements OnInit {
       body: generateRandomSentence(20),
     };
     this.postsService.addCommentToPost(postId, newComment);
+  }
+
+  toggleShowState() {
+    this.showState.set(!this.showState());
   }
 }
