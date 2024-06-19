@@ -5,7 +5,6 @@ import { PostsService } from '../../services/posts.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe, JsonPipe } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -22,7 +21,6 @@ import { CommentDisplayComponent } from '../comment-display/comment-display.comp
   standalone: true,
   providers: [PostsService],
   imports: [
-    HttpClientModule,
     MatButtonModule,
     MatPaginatorModule,
     MatTableModule,
