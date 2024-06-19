@@ -68,7 +68,47 @@ export class PostsService {
       if (post) {
         const updatedPost = {
           ...post,
-          comments: [...(post.comments || []), comment],
+          comments: [...(post.comments ?? []), comment],
+        };
+        return {
+          posts: state.posts.map((post) =>
+            post.id === postId ? updatedPost : post
+          ),
+        };
+      }
+      return {};
+    });
+  }
+
+  removeCommentFromPost(postId: number, commentId: number) {
+    patchState(this.state, (state) => {
+      const post = state.posts.find((p) => p.id === postId);
+      if (post) {
+        const updatedPost = {
+          ...post,
+          comments: (post.comments ?? []).filter(
+            (comment) => comment.id !== commentId
+          ),
+        };
+        return {
+          posts: state.posts.map((post) =>
+            post.id === postId ? updatedPost : post
+          ),
+        };
+      }
+      return {};
+    });
+  }
+
+  updateCommentForPost(postId: number, updatedComment: Comment) {
+    patchState(this.state, (state) => {
+      const post = state.posts.find((p) => p.id === postId);
+      if (post) {
+        const updatedPost = {
+          ...post,
+          comments: (post.comments ?? []).map((comment) =>
+            comment.id === updatedComment.id ? updatedComment : comment
+          ),
         };
         return {
           posts: state.posts.map((post) =>
