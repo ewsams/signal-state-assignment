@@ -40,7 +40,7 @@ export class PostsComponent implements OnInit {
   paginator = viewChild.required(MatPaginator);
   dataSource = new MatTableDataSource<Post>([]);
 
-  post = this.postsService.posts;
+  posts = this.postsService.posts;
   isLoading = this.postsService.isLoading;
   error = this.postsService.error;
   currentState = this.postsService.currentState;
@@ -59,7 +59,7 @@ export class PostsComponent implements OnInit {
 
   constructor(protected readonly postsService: PostsService) {
     effect(() => {
-      this.dataSource.data = this.post();
+      this.dataSource.data = this.posts();
       this.dataSource.paginator = this.paginator();
     });
   }
