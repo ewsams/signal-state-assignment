@@ -8,6 +8,7 @@ import {
   generateRandomDate,
   generateRandomEmail,
   generateRandomName,
+  generateRandomSentence,
 } from './posts-service-helper-methods';
 import { PostsState } from '../models/PostsState.type';
 
@@ -135,6 +136,7 @@ export class PostsService {
   private processPosts(posts: Post[]): Post[] {
     return posts.slice(0, 10).map((post) => ({
       ...post,
+      body: generateRandomSentence(10),
       author: {
         name: generateRandomName(),
         email: generateRandomEmail(),

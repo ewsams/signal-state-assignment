@@ -74,7 +74,7 @@ export class PostsComponent implements OnInit {
       userId: 1,
       id,
       title: `New Post ID: #${id} ${generateRandomSentence(10)}`,
-      body: `This is a new post ${generateRandomSentence(30)} it's ID is ${id}`,
+      body: `This is a new post ${generateRandomSentence(10)} it's ID is ${id}`,
       author: {
         name: generateRandomName(),
         email: generateRandomEmail(),
@@ -93,7 +93,7 @@ export class PostsComponent implements OnInit {
     const updatedPost: Post = {
       ...post,
       title: `Updated Title ID: ${post.id} ${generateRandomSentence(10)}`,
-      body: `Updated Body ID: ${post.id} ${generateRandomSentence(30)}`,
+      body: `Updated Body ID: ${post.id} ${generateRandomSentence(20)}`,
       metadata: {
         ...post.metadata,
         updatedAt: new Date().toISOString(),
@@ -112,7 +112,7 @@ export class PostsComponent implements OnInit {
       id: Math.floor(Math.random() * 1000),
       name: generateRandomName(),
       email: generateRandomEmail(),
-      body: generateRandomSentence(30),
+      body: generateRandomSentence(20),
     };
     this.postsService.addCommentToPost(postId, newComment);
   }
