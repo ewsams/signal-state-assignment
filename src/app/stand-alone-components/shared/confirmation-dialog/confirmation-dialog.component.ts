@@ -19,11 +19,11 @@ export class ConfirmationDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { message: string }
   ) {}
 
-  onNoClick(): void {
+  onCancel(): void {
     this.dialogRef.close(false);
   }
 
-  onYesClick(): void {
+  onRemove(): void {
     this.dialogRef.close(true);
   }
 }
