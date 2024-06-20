@@ -58,7 +58,7 @@ export class PostsFormDialogComponent implements OnInit {
       metadata: {
         createdAt:
           this.data?.post?.metadata.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        updatedAt: this.data ? new Date().toISOString() : null,
       },
       comments: this.data?.post?.comments || [],
     };
