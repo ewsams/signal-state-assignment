@@ -1,5 +1,4 @@
 import { Component, OnInit, effect, signal, viewChild } from '@angular/core';
-import { Post } from '../../models/Post.models';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -14,6 +13,7 @@ import { tap } from 'rxjs/operators';
 import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PostsFormDialogComponent } from '../posts-form-dialog/posts-form-dialog.component';
+import { Post } from '../../models/Post.models';
 
 @Component({
   selector: 'app-posts',

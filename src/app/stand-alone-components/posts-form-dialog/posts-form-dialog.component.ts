@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -24,25 +24,24 @@ import { Post } from '../../models/Post.models';
   templateUrl: './posts-form-dialog.component.html',
   styleUrls: ['./posts-form-dialog.component.scss'],
 })
-export class PostsFormDialogComponent {
+export class PostsFormDialogComponent implements OnInit {
+  postForm = this.createPostForm();
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<PostsFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { post?: Post }
   ) {}
 
-  postForm = this.createFormGroup();
-
-  createFormGroup() {
-    return this.fb.group({
-      title: [this.data?.post?.title || '', Validators.required],
-      authorName: [this.data?.post?.author.name || '', Validators.required],
-      authorEmail: [
-        this.data?.post?.author.email || '',
-        [Validators.required, Validators.email],
-      ],
-      body: [this.data?.post?.body || '', Validators.required],
-    });
+  ngOnInit(): void {
+    if (this.data && this.data.post) {
+      this.postForm.patchValue({
+        title: this.data.post.title,
+        authorName: this.data.post.author.name,
+        authorEmail: this.data.post.author.email,
+        body: this.data.post.body,
+      });
+    }
   }
 
   onSubmit() {
@@ -64,6 +63,15 @@ export class PostsFormDialogComponent {
       comments: this.data?.post?.comments || [],
     };
     this.dialogRef.close(newPost);
+  }
+
+  createPostForm() {
+    return this.fb.group({
+      title: ['', Validators.required],
+      authorName: ['', Validators.required],
+      authorEmail: ['', [Validators.required, Validators.email]],
+      body: ['', Validators.required],
+    });
   }
 
   onCancel() {

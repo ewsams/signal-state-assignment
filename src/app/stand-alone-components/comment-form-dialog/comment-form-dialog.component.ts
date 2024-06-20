@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormsModule,
@@ -24,24 +24,23 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './comment-form-dialog.component.html',
   styleUrls: ['./comment-form-dialog.component.scss'],
 })
-export class CommentFormDialogComponent {
+export class CommentFormDialogComponent implements OnInit {
+  commentForm = this.createCommentForm();
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CommentFormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { postId: number; comment?: Comment }
   ) {}
 
-  commentForm = this.createFormGroup();
-
-  createFormGroup() {
-    return this.fb.group({
-      name: [this.data?.comment?.name || '', Validators.required],
-      email: [
-        this.data?.comment?.email || '',
-        [Validators.required, Validators.email],
-      ],
-      body: [this.data?.comment?.body || '', Validators.required],
-    });
+  ngOnInit(): void {
+    if (this.data && this.data.comment) {
+      this.commentForm.patchValue({
+        name: this.data.comment.name,
+        email: this.data.comment.email,
+        body: this.data.comment.body,
+      });
+    }
   }
 
   onSubmit() {
@@ -58,6 +57,14 @@ export class CommentFormDialogComponent {
 
   onCancel() {
     this.dialogRef.close(false);
+  }
+
+  createCommentForm() {
+    return this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      body: ['', Validators.required],
+    });
   }
 
   get name() {
