@@ -64,7 +64,6 @@ export function generateRandomEmail(): string {
     'sample.com',
     'mocksite.com',
     'testsite.com',
-    'dummy.com',
     'prototype.com',
     'sandbox.com',
     'trial.com',
