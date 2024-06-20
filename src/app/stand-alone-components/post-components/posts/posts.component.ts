@@ -14,6 +14,7 @@ import { CommentFormDialogComponent } from '../../comment-components/comment-for
 import { MatDialog } from '@angular/material/dialog';
 import { PostsFormDialogComponent } from '../posts-form-dialog/posts-form-dialog.component';
 import { Post } from '../../../models/Post.models';
+import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-posts',
@@ -106,7 +107,15 @@ export class PostsComponent implements OnInit {
   }
 
   deletePost(postId: number) {
-    this.postsService.removePost(postId);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { message: 'Are you sure you want to delete this post?' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.postsService.removePost(postId);
+      }
+    });
   }
 
   addComment(postId: number) {

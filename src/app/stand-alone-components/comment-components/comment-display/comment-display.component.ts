@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
 import { tap } from 'rxjs/operators';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-comment-display',
@@ -23,7 +24,15 @@ export class CommentDisplayComponent {
   comments = input<Comment[]>([]);
 
   onRemoveComment(postId: number, commentId: number) {
-    this.postService.removeCommentFromPost(postId, commentId);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { message: 'Are you sure you want to remove this comment?' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.postService.removeCommentFromPost(postId, commentId);
+      }
+    });
   }
 
   onUpdateComment(postId: number, comment: Comment) {
