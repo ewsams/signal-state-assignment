@@ -117,8 +117,8 @@ export class PostsComponent implements OnInit {
   addComment(postId: number) {
     const dialogRef = this.dialog.open(CommentFormDialogComponent, {
       data: { postId },
-      width: '600px',
-      height: '450px',
+      width: '60vw',
+      height: '60vh',
     });
 
     dialogRef
