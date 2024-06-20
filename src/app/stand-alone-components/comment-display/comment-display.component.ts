@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { Comment } from '../../models/Comment.model';
 import { PostsService } from '../../services/posts.service';
@@ -22,8 +22,6 @@ export class CommentDisplayComponent {
 
   comments = input<Comment[]>([]);
   maxLength = input<number>(30);
-  updateComment = output<number>();
-  removeComment = output<number>();
 
   onRemoveComment(postId: number, commentId: number) {
     this.postService.removeCommentFromPost(postId, commentId);
