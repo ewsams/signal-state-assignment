@@ -29,31 +29,17 @@ export class PostsService {
   readonly currentState = this.postsState;
 
   private async fetchPosts(): Promise<Post[]> {
-    try {
-      return await firstValueFrom(
-        this.http.get<Post[]>(`${this.apiUrl}/posts`)
-      );
-    } catch (error) {
-      throw error;
-    }
+    return firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`));
   }
 
   async loadPosts() {
-    patchState(this.postsState, {
-      isLoading: true,
-    });
+    patchState(this.postsState, { isLoading: true });
     try {
       const posts = await this.fetchPosts();
       const processedPosts = this.processPosts(posts);
-      patchState(this.postsState, {
-        posts: processedPosts,
-        isLoading: false,
-      });
+      patchState(this.postsState, { posts: processedPosts, isLoading: false });
     } catch (error) {
-      patchState(this.postsState, {
-        error,
-        isLoading: false,
-      });
+      patchState(this.postsState, { error, isLoading: false });
     }
   }
 
@@ -69,10 +55,7 @@ export class PostsService {
     patchState(this.postsState, {
       posts: this.postsState().posts.map((post) =>
         post.id === postId
-          ? {
-              ...post,
-              comments: [...(post.comments ?? []), comment],
-            }
+          ? { ...post, comments: [...(post.comments ?? []), comment] }
           : post
       ),
     });
