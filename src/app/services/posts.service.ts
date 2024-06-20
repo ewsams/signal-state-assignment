@@ -1,7 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { signalState, patchState } from '@ngrx/signals';
-import { catchError, EMPTY, tap } from 'rxjs';
 import { Post } from '../models/Post.models';
 import { Comment } from '../models/Comment.model';
 import {
@@ -11,6 +9,8 @@ import {
   generateRandomSentence,
 } from '../helpers/posts-helper-methods';
 import { PostsState } from '../models/PostsState.type';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+import { patchState, signalState } from '@ngrx/signals';
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
@@ -19,57 +19,46 @@ export class PostsService {
 
   private readonly postsState = signalState<PostsState>({
     posts: [],
-    comments: [],
     isLoading: false,
     error: null,
-    author: {
-      name: null,
-      email: null,
-    },
-    metadata: {
-      createdAt: null,
-      updatedAt: null,
-    },
   });
 
   readonly posts = this.postsState.posts;
-  readonly comments = this.postsState.comments;
   readonly isLoading = this.postsState.isLoading;
   readonly error = this.postsState.error;
   readonly currentState = this.postsState;
 
-  loadPosts() {
+  private async fetchPosts(): Promise<Post[]> {
+    try {
+      return await firstValueFrom(
+        this.http.get<Post[]>(`${this.apiUrl}/posts`)
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async loadPosts() {
     patchState(this.postsState, {
-      ...this.postsState(),
       isLoading: true,
-      posts: [],
     });
-    return this.http
-      .get<Post[]>(`${this.apiUrl}/posts`)
-      .pipe(
-        tap((posts) => {
-          const processedPosts = this.processPosts(posts);
-          patchState(this.postsState, {
-            ...this.postsState(),
-            posts: processedPosts,
-            isLoading: false,
-          });
-        }),
-        catchError((error) => {
-          patchState(this.postsState, {
-            ...this.postsState(),
-            error: error.message,
-            isLoading: false,
-          });
-          return EMPTY;
-        })
-      )
-      .subscribe();
+    try {
+      const posts = await this.fetchPosts();
+      const processedPosts = this.processPosts(posts);
+      patchState(this.postsState, {
+        posts: processedPosts,
+        isLoading: false,
+      });
+    } catch (e) {
+      patchState(this.postsState, {
+        error: (e as Error).message,
+        isLoading: false,
+      });
+    }
   }
 
   updatePost(updatedPost: Post) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: this.postsState().posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
@@ -78,7 +67,6 @@ export class PostsService {
 
   addCommentToPost(postId: number, comment: Comment) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
@@ -92,7 +80,6 @@ export class PostsService {
 
   removeCommentFromPost(postId: number, commentId: number) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
@@ -108,7 +95,6 @@ export class PostsService {
 
   updateCommentForPost(postId: number, updatedComment: Comment) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
@@ -124,14 +110,12 @@ export class PostsService {
 
   addPost(post: Post) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: [post, ...this.postsState().posts],
     });
   }
 
   removePost(postId: number) {
     patchState(this.postsState, {
-      ...this.postsState(),
       posts: this.postsState().posts.filter((post) => post.id !== postId),
     });
   }
