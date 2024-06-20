@@ -39,7 +39,7 @@ export class PostsComponent implements OnInit {
 
   posts = this.postsService.posts;
   isLoading = this.postsService.isLoading;
-  error = this.postsService.error;
+  isError = this.postsService.error;
   currentState = this.postsService.currentState;
   showState = signal(false);
 
