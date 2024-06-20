@@ -46,7 +46,7 @@
 
   <!-- Is Error -->
   @if(error()){
-  <div class="error">Error: {{ error() }}</div>
+  <div class="error">An Error Occured: {{ error() | json }}</div>
   }
 
   <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
