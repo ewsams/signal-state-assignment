@@ -7,11 +7,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
 import { tap } from 'rxjs/operators';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-comment-display',
   standalone: true,
-  imports: [MatIcon, MatMiniFabButton, MatCardModule],
+  imports: [MatIcon, MatMiniFabButton, MatCardModule, MatTooltipModule],
   templateUrl: './comment-display.component.html',
   styleUrl: './comment-display.component.scss',
 })

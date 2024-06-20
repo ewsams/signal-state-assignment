@@ -13,6 +13,8 @@
     <button
       mat-mini-fab
       color="primary"
+      matTooltip="Update post"
+      matTooltipPosition="above"
       (click)="onUpdateComment(comment.postId, comment)"
     >
       <mat-icon>edit</mat-icon>
@@ -20,6 +22,8 @@
     <button
       mat-mini-fab
       color="warn"
+      matTooltip="Remove post"
+      matTooltipPosition="above"
       (click)="onRemoveComment(comment.postId, comment.id)"
     >
       <mat-icon>delete</mat-icon>

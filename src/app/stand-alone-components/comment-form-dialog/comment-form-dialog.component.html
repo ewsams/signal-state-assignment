@@ -1,5 +1,7 @@
 <form [formGroup]="commentForm">
-  <h2 mat-dialog-title>{{ data.comment ? "Edit Comment" : "Add Comment" }}</h2>
+  <h2 mat-dialog-title>
+    {{ data.comment ? "Update Comment" : "Add Comment" }}
+  </h2>
 
   <!-- Name Field -->
   <mat-form-field appearance="fill">
