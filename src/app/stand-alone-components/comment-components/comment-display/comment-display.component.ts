@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { Comment } from '../../models/Comment.model';
-import { PostsService } from '../../services/posts.service';
+import { Comment } from '../../../models/Comment.model';
+import { PostsService } from '../../../services/posts.service';
 import { MatMiniFabButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';

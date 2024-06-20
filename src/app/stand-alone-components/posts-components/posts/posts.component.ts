@@ -1,6 +1,6 @@
 import { Component, OnInit, effect, signal, viewChild } from '@angular/core';
-import { Comment } from '../../models/Comment.model';
-import { PostsService } from '../../services/posts.service';
+import { Comment } from '../../../models/Comment.model';
+import { PostsService } from '../../../services/posts.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { DatePipe, JsonPipe } from '@angular/common';
@@ -8,12 +8,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommentDisplayComponent } from '../comment-display/comment-display.component';
+import { CommentDisplayComponent } from '../../comment-components/comment-display/comment-display.component';
 import { tap } from 'rxjs/operators';
-import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
+import { CommentFormDialogComponent } from '../../comment-components/comment-form-dialog/comment-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PostsFormDialogComponent } from '../posts-form-dialog/posts-form-dialog.component';
-import { Post } from '../../models/Post.models';
+import { Post } from '../../../models/Post.models';
 
 @Component({
   selector: 'app-posts',

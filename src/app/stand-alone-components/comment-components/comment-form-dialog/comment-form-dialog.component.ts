@@ -1,12 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Comment } from '../../models/Comment.model';
+import { Comment } from '../../../models/Comment.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -68,14 +69,14 @@ export class CommentFormDialogComponent implements OnInit {
   }
 
   get name() {
-    return this.commentForm.get('name');
+    return this.commentForm.get('name') as FormControl<string>;
   }
 
   get email() {
-    return this.commentForm.get('email');
+    return this.commentForm.get('email') as FormControl<string>;
   }
 
   get body() {
-    return this.commentForm.get('body');
+    return this.commentForm.get('body') as FormControl<string>;
   }
 }

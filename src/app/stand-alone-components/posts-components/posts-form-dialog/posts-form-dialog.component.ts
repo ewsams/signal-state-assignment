@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
+  FormControl,
   FormsModule,
   ReactiveFormsModule,
   Validators,
@@ -9,7 +10,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { Post } from '../../models/Post.models';
+import { Post } from '../../../models/Post.models';
 
 @Component({
   selector: 'app-posts-form-dialog',
@@ -79,18 +80,18 @@ export class PostsFormDialogComponent implements OnInit {
   }
 
   get title() {
-    return this.postForm.get('title');
+    return this.postForm.get('title') as FormControl<string>;
   }
 
   get authorName() {
-    return this.postForm.get('authorName');
+    return this.postForm.get('authorName') as FormControl<string>;
   }
 
   get authorEmail() {
-    return this.postForm.get('authorEmail');
+    return this.postForm.get('authorEmail') as FormControl<string>;
   }
 
   get body() {
-    return this.postForm.get('body');
+    return this.postForm.get('body') as FormControl<string>;
   }
 }
