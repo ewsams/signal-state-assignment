@@ -5,13 +5,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Comment } from '../../models/Comment.model';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-comment-form-dialog',
@@ -19,13 +17,12 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
-    MatFormField,
-    MatError,
-    MatLabel,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
   ],
   templateUrl: './comment-form-dialog.component.html',
-  styleUrl: './comment-form-dialog.component.scss',
+  styleUrls: ['./comment-form-dialog.component.scss'],
 })
 export class CommentFormDialogComponent {
   constructor(
@@ -36,11 +33,14 @@ export class CommentFormDialogComponent {
 
   commentForm = this.createFormGroup();
 
-  createFormGroup(comment?: Comment) {
+  createFormGroup() {
     return this.fb.group({
-      name: [comment?.name || '', Validators.required],
-      email: [comment?.email || '', [Validators.required, Validators.email]],
-      body: [comment?.body || '', Validators.required],
+      name: [this.data?.comment?.name || '', Validators.required],
+      email: [
+        this.data?.comment?.email || '',
+        [Validators.required, Validators.email],
+      ],
+      body: [this.data?.comment?.body || '', Validators.required],
     });
   }
 
@@ -57,6 +57,18 @@ export class CommentFormDialogComponent {
   }
 
   onCancel() {
-    this.dialogRef.close();
+    this.dialogRef.close(false);
+  }
+
+  get name() {
+    return this.commentForm.get('name');
+  }
+
+  get email() {
+    return this.commentForm.get('email');
+  }
+
+  get body() {
+    return this.commentForm.get('body');
   }
 }

@@ -1,31 +1,40 @@
-<h2 mat-dialog-title>{{ data.comment ? "Edit Comment" : "Add Comment" }}</h2>
 <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+  <h2 mat-dialog-title>{{ data.comment ? "Edit Comment" : "Add Comment" }}</h2>
+  <!-- Name Field -->
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
     <input matInput formControlName="name" required />
-    <mat-error *ngIf="commentForm.get('name').hasError('required')"
-      >Name is required</mat-error
-    >
+    @if(name?.hasError('required')){
+    <mat-error>Name is required</mat-error>
+    }
   </mat-form-field>
+
+  <!-- Email Field -->
   <mat-form-field appearance="fill">
     <mat-label>Email</mat-label>
     <input matInput formControlName="email" type="email" required />
-    <mat-error *ngIf="commentForm.get('email').hasError('required')"
-      >Email is required</mat-error
-    >
-    <mat-error *ngIf="commentForm.get('email').hasError('email')"
-      >Invalid email</mat-error
-    >
+    @if(email?.hasError('email') || email?.hasError('required')){
+    <mat-error>Invalid email</mat-error>
+    }
   </mat-form-field>
+
+  <!-- Comment Field -->
   <mat-form-field appearance="fill">
     <mat-label>Comment</mat-label>
     <textarea matInput formControlName="body" required></textarea>
-    <mat-error *ngIf="commentForm.get('body').hasError('required')"
-      >Comment is required</mat-error
-    >
+    @if(body?.hasError('required')){
+    <mat-error>Comment is required</mat-error>
+    }
   </mat-form-field>
   <div mat-dialog-actions>
     <button mat-button (click)="onCancel()">Cancel</button>
-    <button mat-button color="primary" type="submit">Save</button>
+    <button
+      mat-button
+      color="primary"
+      type="submit"
+      [disabled]="commentForm.invalid"
+    >
+      Save
+    </button>
   </div>
 </form>
