@@ -46,15 +46,14 @@ export class PostsFormDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    const postFormValue = this.postForm.value;
     const newPost: Post = {
       userId: this.data?.post?.userId || Math.floor(Math.random() * 1000),
       id: this.data?.post?.id || Math.floor(Math.random() * 1000),
-      title: postFormValue.title as string,
-      body: postFormValue.body as string,
+      title: this.title.value,
+      body: this.body.value,
       author: {
-        name: postFormValue.authorName as string,
-        email: postFormValue.authorEmail as string,
+        name: this.authorName.value,
+        email: this.authorEmail.value,
       },
       metadata: {
         createdAt:

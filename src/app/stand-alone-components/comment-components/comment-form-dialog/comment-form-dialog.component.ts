@@ -45,13 +45,12 @@ export class CommentFormDialogComponent implements OnInit {
   }
 
   onSubmit() {
-    const commentFormValue = this.commentForm.value;
     const newComment: Comment = {
       postId: this.data.postId,
       id: this.data.comment?.id || Math.floor(Math.random() * 1000),
-      name: commentFormValue.name as string,
-      email: commentFormValue.email as string,
-      body: commentFormValue.body as string,
+      name: this.name.value,
+      email: this.email.value,
+      body: this.body.value,
     };
     this.dialogRef.close(newComment);
   }
