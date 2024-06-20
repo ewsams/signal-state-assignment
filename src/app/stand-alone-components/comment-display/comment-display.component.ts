@@ -21,7 +21,6 @@ export class CommentDisplayComponent {
   private postService = inject(PostsService);
 
   comments = input<Comment[]>([]);
-  maxLength = input<number>(30);
 
   onRemoveComment(postId: number, commentId: number) {
     this.postService.removeCommentFromPost(postId, commentId);
