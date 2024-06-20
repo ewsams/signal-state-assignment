@@ -23,7 +23,7 @@ export class PostsService {
   readonly error = this.postsState.error;
   readonly currentState = this.postsState;
 
-  private async fetchPosts() {
+  private fetchPosts() {
     return firstValueFrom(this.http.get<Post[]>(`${this.apiUrl}/posts`));
   }
 
