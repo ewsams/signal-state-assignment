@@ -49,9 +49,9 @@ export class PostsService {
         posts: processedPosts,
         isLoading: false,
       });
-    } catch (e) {
+    } catch (error) {
       patchState(this.postsState, {
-        error: (e as Error).message,
+        error,
         isLoading: false,
       });
     }
