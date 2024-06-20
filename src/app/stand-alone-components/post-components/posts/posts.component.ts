@@ -70,8 +70,8 @@ export class PostsComponent implements OnInit {
 
   addPost() {
     const dialogRef = this.dialog.open(PostsFormDialogComponent, {
-      width: '70%',
-      height: '70%',
+      width: '50%',
+      height: 'fit-content',
     });
 
     dialogRef
@@ -89,8 +89,8 @@ export class PostsComponent implements OnInit {
   updatePost(post: Post) {
     const dialogRef = this.dialog.open(PostsFormDialogComponent, {
       data: { post },
-      width: '70%',
-      height: '70%',
+      width: '50%',
+      height: 'fit-content',
     });
 
     dialogRef
@@ -112,8 +112,8 @@ export class PostsComponent implements OnInit {
   addComment(postId: number) {
     const dialogRef = this.dialog.open(CommentFormDialogComponent, {
       data: { postId },
-      width: '60%',
-      height: '60%',
+      width: '50%',
+      height: 'fit-content',
     });
 
     dialogRef

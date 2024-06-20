@@ -1,6 +1,8 @@
 $primary-color: #3f51b5;
 $gap-small: 8px;
 $gap-medium: 16px;
+$padding-small: 12px;
+$padding-medium: 18px;
 $padding-large: 24px;
 
 html,
@@ -16,11 +18,10 @@ form {
   display: flex;
   flex-direction: column;
   gap: $gap-medium;
-  padding: $padding-large;
+  padding: $padding-medium;
 
   mat-dialog-title {
     font-size: 1.5em;
-    color: $primary-color;
   }
 
   mat-form-field {
