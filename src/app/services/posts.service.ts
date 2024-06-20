@@ -17,7 +17,7 @@ export class PostsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://jsonplaceholder.typicode.com';
 
-  readonly state = signalState<PostsState>({
+  private readonly state = signalState<PostsState>({
     posts: [],
     comments: [],
     isLoading: false,
