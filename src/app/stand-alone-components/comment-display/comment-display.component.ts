@@ -8,7 +8,7 @@ import {
   generateRandomSentence,
   generateRandomEmail,
   generateRandomName,
-} from '../../services/posts-service-helper-methods';
+} from '../../helpers/posts-helper-methods';
 
 @Component({
   selector: 'app-comment-display',

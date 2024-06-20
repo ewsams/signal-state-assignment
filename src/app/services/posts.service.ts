@@ -9,7 +9,7 @@ import {
   generateRandomEmail,
   generateRandomName,
   generateRandomSentence,
-} from './posts-service-helper-methods';
+} from '../helpers/posts-helper-methods';
 import { PostsState } from '../models/PostsState.type';
 
 @Injectable({ providedIn: 'root' })

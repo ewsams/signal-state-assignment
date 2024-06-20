@@ -13,7 +13,7 @@ import {
   generateRandomEmail,
   generateRandomName,
   generateRandomSentence,
-} from '../../services/posts-service-helper-methods';
+} from '../../helpers/posts-helper-methods';
 import { CommentDisplayComponent } from '../comment-display/comment-display.component';
 
 @Component({
