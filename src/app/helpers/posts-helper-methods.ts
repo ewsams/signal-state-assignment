@@ -1,3 +1,5 @@
+import { Post } from '../models/Post.models';
+
 export const randomSentenceWords = [
   'post',
   'new',
@@ -104,4 +106,20 @@ export function generateRandomSentence(wordCount: number): string {
         Math.floor(Math.random() * randomSentenceWords.length)
       ]
   ).join(' ');
+}
+
+export function processPosts(posts: Post[]): Post[] {
+  return posts.slice(0, 10).map((post) => ({
+    ...post,
+    body: generateRandomSentence(10),
+    author: {
+      name: generateRandomName(),
+      email: generateRandomEmail(),
+    },
+    metadata: {
+      createdAt: generateRandomDate(),
+      updatedAt: '',
+    },
+    comments: [],
+  }));
 }

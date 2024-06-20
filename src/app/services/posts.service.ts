@@ -2,12 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../models/Post.models';
 import { Comment } from '../models/Comment.model';
-import {
-  generateRandomDate,
-  generateRandomEmail,
-  generateRandomName,
-  generateRandomSentence,
-} from '../helpers/posts-helper-methods';
+import { processPosts } from '../helpers/posts-helper-methods';
 import { PostsState } from '../models/PostsState.type';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { patchState, signalState } from '@ngrx/signals';
@@ -36,7 +31,7 @@ export class PostsService {
     patchState(this.postsState, { isLoading: true });
     try {
       const posts = await this.fetchPosts();
-      const processedPosts = this.processPosts(posts);
+      const processedPosts = processPosts(posts);
       patchState(this.postsState, { posts: processedPosts, isLoading: false });
     } catch (error) {
       patchState(this.postsState, { error, isLoading: false });
@@ -101,21 +96,5 @@ export class PostsService {
     patchState(this.postsState, {
       posts: this.postsState().posts.filter((post) => post.id !== postId),
     });
-  }
-
-  private processPosts(posts: Post[]): Post[] {
-    return posts.slice(0, 10).map((post) => ({
-      ...post,
-      body: generateRandomSentence(10),
-      author: {
-        name: generateRandomName(),
-        email: generateRandomEmail(),
-      },
-      metadata: {
-        createdAt: generateRandomDate(),
-        updatedAt: '',
-      },
-      comments: [],
-    }));
   }
 }
