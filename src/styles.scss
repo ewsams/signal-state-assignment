@@ -1,3 +1,8 @@
+$primary-color: #3f51b5;
+$gap-small: 8px;
+$gap-medium: 16px;
+$padding-large: 24px;
+
 html,
 body {
   height: 100%;
@@ -10,12 +15,12 @@ body {
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 24px;
+  gap: $gap-medium;
+  padding: $padding-large;
 
   mat-dialog-title {
     font-size: 1.5em;
-    color: #3f51b5;
+    color: $primary-color;
   }
 
   mat-form-field {
@@ -23,13 +28,13 @@ form {
 
     mat-label {
       font-weight: bold;
-      color: #3f51b5;
+      color: $primary-color;
     }
   }
 
   div[mat-dialog-actions] {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
+    gap: $gap-small;
   }
 }

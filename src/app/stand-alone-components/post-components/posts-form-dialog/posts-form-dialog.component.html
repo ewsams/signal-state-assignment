@@ -5,7 +5,7 @@
   <mat-form-field appearance="fill">
     <mat-label>Title</mat-label>
     <input matInput formControlName="title" required />
-    @if (title?.hasError('required')) {
+    @if (title.hasError('required')) {
     <mat-error>Title is required</mat-error>
     }
   </mat-form-field>
@@ -14,7 +14,7 @@
   <mat-form-field appearance="fill">
     <mat-label>Author Name</mat-label>
     <input matInput formControlName="authorName" required />
-    @if (authorName?.hasError('required')) {
+    @if (authorName.hasError('required')) {
     <mat-error>Author name is required</mat-error>
     }
   </mat-form-field>
@@ -23,7 +23,7 @@
   <mat-form-field appearance="fill">
     <mat-label>Author Email</mat-label>
     <input matInput formControlName="authorEmail" type="email" required />
-    @if (authorEmail?.hasError('email') || authorEmail?.hasError('required')) {
+    @if (authorEmail.hasError('email') || authorEmail.hasError('required')) {
     <mat-error>Invalid email</mat-error>
     }
   </mat-form-field>
@@ -32,7 +32,7 @@
   <mat-form-field appearance="fill">
     <mat-label>Body</mat-label>
     <textarea matInput formControlName="body" required></textarea>
-    @if (body?.hasError('required')) {
+    @if (body.hasError('required')) {
     <mat-error>Body is required</mat-error>
     }
   </mat-form-field>
