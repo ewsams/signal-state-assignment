@@ -1,4 +1,4 @@
-<form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="commentForm">
   <h2 mat-dialog-title>{{ data.comment ? "Edit Comment" : "Add Comment" }}</h2>
   <!-- Name Field -->
   <mat-form-field appearance="fill">
@@ -31,7 +31,7 @@
     <button
       mat-button
       color="primary"
-      type="submit"
+      (click)="onSubmit()"
       [disabled]="commentForm.invalid"
     >
       Save
