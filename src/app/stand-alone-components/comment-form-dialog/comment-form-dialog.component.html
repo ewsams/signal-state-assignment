@@ -1,5 +1,6 @@
 <form [formGroup]="commentForm">
   <h2 mat-dialog-title>{{ data.comment ? "Edit Comment" : "Add Comment" }}</h2>
+
   <!-- Name Field -->
   <mat-form-field appearance="fill">
     <mat-label>Name</mat-label>
@@ -29,9 +30,9 @@
 
   <!-- Actions Section -->
   <div mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-stroked-button (click)="onCancel()">Cancel</button>
     <button
-      mat-button
+      mat-raised-button
       color="primary"
       (click)="onSubmit()"
       [disabled]="commentForm.invalid"
