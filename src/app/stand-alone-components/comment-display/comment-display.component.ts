@@ -28,8 +28,8 @@ export class CommentDisplayComponent {
   onUpdateComment(postId: number, comment: Comment) {
     const dialogRef = this.dialog.open(CommentFormDialogComponent, {
       data: { postId, comment },
-      width: '60vw',
-      height: '60vh',
+      width: '60%',
+      height: '60%',
     });
 
     dialogRef
