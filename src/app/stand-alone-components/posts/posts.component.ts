@@ -15,6 +15,9 @@ import {
   generateRandomSentence,
 } from '../../helpers/posts-helper-methods';
 import { CommentDisplayComponent } from '../comment-display/comment-display.component';
+import { tap } from 'rxjs/operators';
+import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-posts',
@@ -55,7 +58,10 @@ export class PostsComponent implements OnInit {
     'actions',
   ];
 
-  constructor(protected readonly postsService: PostsService) {
+  constructor(
+    protected readonly postsService: PostsService,
+    private dialog: MatDialog
+  ) {
     effect(() => {
       this.dataSource.data = this.posts();
       this.dataSource.paginator = this.paginator();
@@ -109,14 +115,22 @@ export class PostsComponent implements OnInit {
   }
 
   addComment(postId: number) {
-    const newComment: Comment = {
-      postId,
-      id: Math.floor(Math.random() * 1000),
-      name: generateRandomName(),
-      email: generateRandomEmail(),
-      body: generateRandomSentence(20),
-    };
-    this.postsService.addCommentToPost(postId, newComment);
+    const dialogRef = this.dialog.open(CommentFormDialogComponent, {
+      data: { postId },
+      width: '600px',
+      height: '450px',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        tap((result: Comment) => {
+          if (result) {
+            this.postsService.addCommentToPost(postId, result);
+          }
+        })
+      )
+      .subscribe();
   }
 
   toggleShowState() {
