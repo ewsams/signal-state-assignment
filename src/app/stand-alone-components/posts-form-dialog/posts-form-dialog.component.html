@@ -5,36 +5,36 @@
   <mat-form-field appearance="fill">
     <mat-label>Title</mat-label>
     <input matInput formControlName="title" required />
-    <mat-error *ngIf="title?.hasError('required')">Title is required</mat-error>
+    @if(title?.hasError('required')) {
+    <mat-error>Title is required</mat-error>
+    }
   </mat-form-field>
 
   <!-- Author Name Field -->
   <mat-form-field appearance="fill">
     <mat-label>Author Name</mat-label>
     <input matInput formControlName="authorName" required />
-    <mat-error *ngIf="authorName?.hasError('required')"
-      >Author name is required</mat-error
-    >
+    @if(authorName?.hasError('required')) {
+    <mat-error>Author name is required</mat-error>
+    }
   </mat-form-field>
 
   <!-- Author Email Field -->
   <mat-form-field appearance="fill">
     <mat-label>Author Email</mat-label>
     <input matInput formControlName="authorEmail" type="email" required />
-    <mat-error
-      *ngIf="
-        authorEmail?.hasError('email') || authorEmail?.hasError('required')
-      "
-    >
-      Invalid email
-    </mat-error>
+    @if(authorEmail?.hasError('email') || authorEmail?.hasError('required')) {
+    <mat-error>Invalid email</mat-error>
+    }
   </mat-form-field>
 
   <!-- Body Field -->
   <mat-form-field appearance="fill">
     <mat-label>Body</mat-label>
     <textarea matInput formControlName="body" required></textarea>
-    <mat-error *ngIf="body?.hasError('required')">Body is required</mat-error>
+    @if(body?.hasError('required')) {
+    <mat-error>Body is required</mat-error>
+    }
   </mat-form-field>
 
   <!-- Actions Section -->

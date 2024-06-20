@@ -9,15 +9,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-  generateRandomEmail,
-  generateRandomName,
-  generateRandomSentence,
-} from '../../helpers/posts-helper-methods';
 import { CommentDisplayComponent } from '../comment-display/comment-display.component';
 import { tap } from 'rxjs/operators';
 import { CommentFormDialogComponent } from '../comment-form-dialog/comment-form-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { PostsFormDialogComponent } from '../posts-form-dialog/posts-form-dialog.component';
 
 @Component({
   selector: 'app-posts',
@@ -73,41 +69,40 @@ export class PostsComponent implements OnInit {
   }
 
   addPost() {
-    const id = Math.floor(Math.random() * 1000);
-    const newPost: Post = {
-      userId: 1,
-      id,
-      title: `New Post ID: #${id} ${generateRandomSentence(10)}`,
-      body: `This is a new post ${generateRandomSentence(10)} it's ID is ${id}`,
-      author: {
-        name: generateRandomName(),
-        email: generateRandomEmail(),
-      },
-      metadata: {
-        createdAt: new Date().toISOString(),
-        updatedAt: '',
-      },
-      comments: [],
-    };
+    const dialogRef = this.dialog.open(PostsFormDialogComponent, {
+      width: '70%',
+      height: '70%',
+    });
 
-    this.postsService.addPost(newPost);
+    dialogRef
+      .afterClosed()
+      .pipe(
+        tap((result: Post) => {
+          if (result) {
+            this.postsService.addPost(result);
+          }
+        })
+      )
+      .subscribe();
   }
 
   updatePost(post: Post) {
-    const updatedPost: Post = {
-      ...post,
-      author: {
-        name: generateRandomName(),
-        email: generateRandomEmail(),
-      },
-      title: `Updated Title ID: ${post.id} ${generateRandomSentence(10)}`,
-      body: `Updated Body ID: ${post.id} ${generateRandomSentence(20)}`,
-      metadata: {
-        ...post.metadata,
-        updatedAt: new Date().toISOString(),
-      },
-    };
-    this.postsService.updatePost(updatedPost);
+    const dialogRef = this.dialog.open(PostsFormDialogComponent, {
+      data: { post },
+      width: '70%',
+      height: '70%',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        tap((result: Post) => {
+          if (result) {
+            this.postsService.updatePost(result);
+          }
+        })
+      )
+      .subscribe();
   }
 
   deletePost(postId: number) {
