@@ -1,3 +1,8 @@
+@if (!comments().length) {
+<strong>No comments found.</strong>
+}
+
+<!-- Comments Section  -->
 @for (comment of comments(); track $index) {
 <mat-card>
   <div><strong>Comment:</strong> {{ $index + 1 }}:</div>
@@ -22,6 +27,4 @@
     </button>
   </div>
 </mat-card>
-} @if (!comments().length) {
-<strong>No comments found.</strong>
 }
