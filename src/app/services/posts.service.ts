@@ -17,7 +17,7 @@ export class PostsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://jsonplaceholder.typicode.com';
 
-  private state = signalState<PostsState>({
+  private readonly postsState = signalState<PostsState>({
     posts: [],
     comments: [],
     isLoading: false,
@@ -32,28 +32,32 @@ export class PostsService {
     },
   });
 
-  readonly posts = this.state.posts;
-  readonly comments = this.state.comments;
-  readonly isLoading = this.state.isLoading;
-  readonly error = this.state.error;
-  readonly currentState = this.state;
+  readonly posts = this.postsState.posts;
+  readonly comments = this.postsState.comments;
+  readonly isLoading = this.postsState.isLoading;
+  readonly error = this.postsState.error;
+  readonly currentState = this.postsState;
 
   loadPosts() {
-    patchState(this.state, { ...this.state(), isLoading: true, posts: [] });
+    patchState(this.postsState, {
+      ...this.postsState(),
+      isLoading: true,
+      posts: [],
+    });
     return this.http
       .get<Post[]>(`${this.apiUrl}/posts`)
       .pipe(
         tap((posts) => {
           const processedPosts = this.processPosts(posts);
-          patchState(this.state, {
-            ...this.state(),
+          patchState(this.postsState, {
+            ...this.postsState(),
             posts: processedPosts,
             isLoading: false,
           });
         }),
         catchError((error) => {
-          patchState(this.state, {
-            ...this.state(),
+          patchState(this.postsState, {
+            ...this.postsState(),
             error: error.message,
             isLoading: false,
           });
@@ -64,18 +68,18 @@ export class PostsService {
   }
 
   updatePost(updatedPost: Post) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: this.state().posts.map((post) =>
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: this.postsState().posts.map((post) =>
         post.id === updatedPost.id ? updatedPost : post
       ),
     });
   }
 
   addCommentToPost(postId: number, comment: Comment) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: this.state().posts.map((post) =>
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
               ...post,
@@ -87,9 +91,9 @@ export class PostsService {
   }
 
   removeCommentFromPost(postId: number, commentId: number) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: this.state().posts.map((post) =>
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
               ...post,
@@ -103,9 +107,9 @@ export class PostsService {
   }
 
   updateCommentForPost(postId: number, updatedComment: Comment) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: this.state().posts.map((post) =>
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: this.postsState().posts.map((post) =>
         post.id === postId
           ? {
               ...post,
@@ -119,16 +123,16 @@ export class PostsService {
   }
 
   addPost(post: Post) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: [post, ...this.state().posts],
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: [post, ...this.postsState().posts],
     });
   }
 
   removePost(postId: number) {
-    patchState(this.state, {
-      ...this.state(),
-      posts: this.state().posts.filter((post) => post.id !== postId),
+    patchState(this.postsState, {
+      ...this.postsState(),
+      posts: this.postsState().posts.filter((post) => post.id !== postId),
     });
   }
 
