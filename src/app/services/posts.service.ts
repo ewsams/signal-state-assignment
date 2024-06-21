@@ -32,9 +32,11 @@ export class PostsService {
     try {
       const posts = await this.fetchPosts();
       const processedPosts = processPosts(posts);
-      patchState(this.postsState, { posts: processedPosts, isLoading: false });
+      patchState(this.postsState, { posts: processedPosts });
     } catch (error) {
-      patchState(this.postsState, { error, isLoading: false });
+      patchState(this.postsState, { error });
+    } finally {
+      patchState(this.postsState, { isLoading: false });
     }
   }
 
